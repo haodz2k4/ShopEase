@@ -1,8 +1,8 @@
 import { Schema, Document, Model, PopulateOptions } from 'mongoose';
 
 interface PaginateOptions {
-  sortBy?: string; // e.g., 'fieldName:asc,anotherField:desc'
-  populate?: string; // e.g., 'fieldName.nestedField'
+  sortBy?: string; 
+  populate?: string; 
   limit?: number;
   page?: number;
 }
@@ -14,8 +14,7 @@ interface QueryResult<T> {
   totalPages: number;
   totalResults: number;
 }
-
-const paginate = <T extends Document>(schema: Schema<T>) => {
+const paginate = <T>(schema: Schema<T>) => {
   schema.statics.paginate = async function (filter: Record<string, any> = {}, options: PaginateOptions = {}): Promise<QueryResult<T>> {
     let sort = '';
     if (options.sortBy) {

@@ -1,5 +1,7 @@
 import { Schema, model } from 'mongoose'; 
-export interface IProduct {
+import toJSON from "./plugins/toJSON.plugin";
+import paginate from './plugins/paginate.plugin';
+export interface IProduct{
     _id: Schema.Types.ObjectId,
     title: string,
     category_id: Schema.Types.ObjectId,
@@ -60,5 +62,8 @@ const productSchema = new Schema<IProduct>({
 }, {
     timestamps: true
 }) 
+
+productSchema.plugin(toJSON)
+productSchema.plugin(paginate)
 
 export default model<IProduct>("product",productSchema)
