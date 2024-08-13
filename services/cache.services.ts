@@ -25,3 +25,15 @@ export const deleteCache = async (key: string) => {
         throw new Error("Error delete cache: "+error)
     }
 }
+
+export const clearCacheGroup = async (key: string) => {
+    try {
+        const cacheKeys = await redis.smembers(key);
+        if (cacheKeys.length > 0) {
+            await redis.del(...cacheKeys);
+        }
+        await redis.del(key);
+    } catch (error) {
+        throw new Error("Error clearing cache group: " + error);
+    }
+};
