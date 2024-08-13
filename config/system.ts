@@ -1,0 +1,3 @@
+export default {
+    prefixAdmin: "admin"
+}
