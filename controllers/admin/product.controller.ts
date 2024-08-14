@@ -1,13 +1,18 @@
 import { catchAsync } from "../../utils/catchAsync";
 import {pick} from "../../utils/pick";
 import { Request, Response } from "express";
+//helper 
+import paginate from "../../helpers/paginate.helper";
 //Service 
 import * as ProductService from "../../services/product.services"
+import { model } from "mongoose";
 //[GET] "/admin/products"
 export const index = catchAsync(async (req: Request, res: Response) => {
     const filter = pick(req.query,["status","title"]);
     const sort = pick(req.query,["sortKey","sortValue"])
-    const pagination = res.locals.pagination;
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 15
+    const pagination = await paginate(model('product'),filter,{page, limit})
     const products = await ProductService.getProductsByQuery(filter,sort,pagination,"-deleted");
     res.json({products, pagination})
 })
