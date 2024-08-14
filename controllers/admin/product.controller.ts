@@ -17,3 +17,11 @@ export const detail = catchAsync(async (req: Request, res: Response) => {
     const product = await ProductService.getProductById(id);
     res.status(200).json({product})
 }) 
+
+//[GET] "/admin/products/change-status/:id"
+export const changeStatus = catchAsync(async(req: Request, res: Response) => {
+    const id = req.params.id;
+    const status = req.body.status;
+    const product = await ProductService.changeStatus(id, status);
+    res.status(200).json({message: "Status change successful",product})
+})

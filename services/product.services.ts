@@ -43,3 +43,11 @@ export const getProductBySlug = async (slug: string) :Promise<IProduct> => {
     await CacheService.setCache(cacheKey,product,3600)
     return product
 }
+
+export const changeStatus = async (id: string, status: string) :Promise<IProduct> => {
+    const product = await Product.findByIdAndUpdate(id,{status: status},{new: true, runValidators: true}).select("status")
+    if(!product){
+        throw new ApiError(404,"Không tìm thấy sản phẩm tương ứng")
+    }
+    return product
+}
