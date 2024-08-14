@@ -1,4 +1,5 @@
 import { Schema, model } from 'mongoose'; 
+import {createSlug,createUniqueSlug } from '../helpers/slug.helper';
 export interface IProduct{
     _id: Schema.Types.ObjectId,
     title: string,
@@ -61,4 +62,12 @@ const productSchema = new Schema<IProduct>({
     timestamps: true
 }) 
 
+
+productSchema.pre('save',async function(next) {
+    if(this.isModified('title')){
+        const initSlug = createSlug(this.title);
+        this.slug = await createUniqueSlug(initSlug,model('product'))
+    }
+
+})
 export default model<IProduct>("product",productSchema)

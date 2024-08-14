@@ -91,3 +91,12 @@ export const edit = async (id: string, value: IProduct) :Promise<IProduct> => {
     }
     return product
 }
+
+export const create = async (value: IProduct) => {
+    const product = await Product.create(value);
+    return product
+}
+
+export const isExistsCategory_id = async (category_id: string) => {
+    
+}

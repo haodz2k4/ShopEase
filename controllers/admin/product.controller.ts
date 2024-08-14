@@ -1,3 +1,4 @@
+import { create } from './../../services/product.services';
 import { catchAsync } from "../../utils/catchAsync";
 import {pick} from "../../utils/pick";
 import { NextFunction, Request, Response } from "express";
@@ -70,4 +71,11 @@ export const edit = catchAsync(async (req: Request, res: Response, next: NextFun
     const product = await ProductService.edit(id,body);
     res.status(200).json({message: "Update product successfull",product})
     next()
+})
+
+//[POST] "/admin/products/add"
+export const createProduct = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const body = req.body;
+    const product = await ProductService.create(body);
+    res.status(201).json({message: "Create product successful", product})
 })
