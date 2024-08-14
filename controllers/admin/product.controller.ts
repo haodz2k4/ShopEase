@@ -1,6 +1,6 @@
 import { catchAsync } from "../../utils/catchAsync";
 import {pick} from "../../utils/pick";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import redis from "../../config/redis";
 //helper 
 import paginate from "../../helpers/paginate.helper";
@@ -30,9 +30,10 @@ export const detail = catchAsync(async (req: Request, res: Response) => {
 }) 
 
 //[GET] "/admin/products/change-status/:id"
-export const changeStatus = catchAsync(async(req: Request, res: Response) => {
+export const changeStatus = catchAsync(async(req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     const status = req.body.status;
     const product = await ProductService.changeStatus(id, status);
     res.status(200).json({message: "Status change successful",product})
+    next()
 })

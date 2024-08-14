@@ -3,9 +3,11 @@ import { model } from "mongoose";
 const router: Router = Router();
 import * as controller from "../../controllers/admin/product.controller";
 //middleware 
-import { cacheMiddleware } from "../../middlewares/cache.middleware";
-router.get("/",cacheMiddleware(3600),controller.index);
+import { cacheMiddleware, clearCacheMiddleware } from "../../middlewares/cache.middleware";
+
+const groupKey = 'products_cache'
+router.get("/",cacheMiddleware(3600,groupKey),controller.index);
 router.get("/detail/:id",controller.detail) 
-router.patch("/change-status/:id",controller.changeStatus)
+router.patch("/change-status/:id",controller.changeStatus,clearCacheMiddleware(groupKey))
 
 export default router
