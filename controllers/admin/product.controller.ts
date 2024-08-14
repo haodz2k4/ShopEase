@@ -9,5 +9,11 @@ export const index = catchAsync(async (req: Request, res: Response) => {
     const sort = pick(req.query,["sortKey","sortValue"])
     const pagination = res.locals.pagination
     const products = await ProductService.getProductsByQuery(filter,sort,pagination,"-deleted");
-    res.json({products})
+    res.json({products, pagination})
 })
+//[GET] "/admin/products/detail/:id"
+export const detail = catchAsync(async (req: Request, res: Response) => {
+    const id = req.params.id;
+    const product = await ProductService.getProductById(id);
+    res.status(200).json({product})
+}) 

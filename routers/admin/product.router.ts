@@ -5,5 +5,6 @@ import * as controller from "../../controllers/admin/product.controller";
 //middleware 
 import paginate from "../../middlewares/paginate.middleware";
 router.get("/",paginate(model('product'),20),controller.index);
+router.get("/detail/:id",controller.detail) 
 
 export default router
