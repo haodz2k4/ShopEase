@@ -1,7 +1,12 @@
 import Product,{IProduct} from "../models/product.model";
 import ApiError from "../utils/ApiError";
-
-export const getProductsByQuery = async (filter: Record<string, any>, sort: Record<string, any>,pagination: any,select: string) :Promise<IProduct[]> => {
+import * as CacheService from "./cache.services";
+export const getProductsByQuery = async (filter: Record<string, any>, sort: Record<string, any>,pagination: any,select: string) :Promise<IProduct[]> => { 
+    const cacheKey = `products:${JSON.stringify(filter)}:${JSON.stringify(sort)}:${JSON.stringify(pagination)}:${JSON.stringify(select)}`
+    const isCached = await CacheService.getCache(cacheKey);
+    if(isCached){
+        return isCached
+    }
     const sortOption: Record<string, any> = {};
     if (sort.sortKey && sort.sortValue) {
         sortOption[sort.sortKey] = sort.sortValue === 'desc' ? -1 : 1;
@@ -11,7 +16,9 @@ export const getProductsByQuery = async (filter: Record<string, any>, sort: Reco
         .sort(sortOption)
         .limit(pagination.limit)
         .skip(pagination.skip)
-        .select(select)
+        .select(select); 
+
+    await CacheService.setCache(cacheKey,products,3600)
     return products;
 }
 
@@ -24,9 +31,15 @@ export const getProductById = async (id: string) :Promise<IProduct> => {
 }
 
 export const getProductBySlug = async (slug: string) :Promise<IProduct> => {
+    const cacheKey = `product:${slug}`;
+    const isCached = await CacheService.getCache(cacheKey);
+    if(isCached){
+        return isCached
+    }
     const product = await Product.findOne({slug, deleted: false, status: "active"})
     if(!product){
         throw new ApiError(404,"Không tìm thấy sản phẩm tương ứng")
     }
+    await CacheService.setCache(cacheKey,product,3600)
     return product
 }
