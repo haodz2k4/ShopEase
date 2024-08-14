@@ -83,3 +83,11 @@ export const changeMultiPosition = async (ids: {id: string, position: number}[])
     }
     return products
 }
+
+export const edit = async (id: string, value: IProduct) :Promise<IProduct> => {
+    const product = await Product.findByIdAndUpdate(id, value);
+    if(!product){
+        throw new ApiError(404,"No products found")
+    }
+    return product
+}

@@ -60,4 +60,14 @@ export const changeMulti = catchAsync(async (req: Request, res: Response, next: 
         default: 
             throw new ApiError(400,"Type is not valid")
     }   
+    next()
+})
+
+//[PATCH] "/admin/products/edit/:id"
+export const edit = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id 
+    const body = req.body
+    const product = await ProductService.edit(id,body);
+    res.status(200).json({message: "Update product successfull",product})
+    next()
 })
