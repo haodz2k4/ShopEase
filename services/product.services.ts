@@ -20,7 +20,7 @@ export const getProductsByQuery = async (filter: Record<string, any>, sort: Reco
 export const getProductById = async (id: string) :Promise<IProduct> => {
     const product = await Product.findOne({_id: id, deleted: false})
     if(!product){
-        throw new ApiError(404,"Không tìm thấy sản phẩm tương ứng")
+        throw new ApiError(404,"No products found")
     }
     return product
 }
@@ -28,7 +28,7 @@ export const getProductById = async (id: string) :Promise<IProduct> => {
 export const getProductBySlug = async (slug: string) :Promise<IProduct> => {
     const product = await Product.findOne({slug, deleted: false, status: "active"})
     if(!product){
-        throw new ApiError(404,"Không tìm thấy sản phẩm tương ứng")
+        throw new ApiError(404,"No products found")
     }
     return product
 }
@@ -37,7 +37,49 @@ export const changeStatus = async (id: string, status: string) :Promise<IProduct
     const product = await Product
     .findByIdAndUpdate(id,{status: status},{new: true, runValidators: true}).select("status slug")
     if(!product){
-        throw new ApiError(404,"Không tìm thấy sản phẩm tương ứng")
+        throw new ApiError(404,"No products found")
     }
     return product
+}
+
+export const changeMultiDelete = async (ids: string[]) :Promise<any> => {
+    const infoUpdate = await Product.updateMany({_id: {$in: ids}}, {deleted: false});
+    if(infoUpdate.modifiedCount === 0){
+        throw new ApiError(400,"No products have been delete")
+    }else if(infoUpdate.modifiedCount !== ids.length){
+        throw new ApiError(400,"Unable to delete all products")
+    }
+    return infoUpdate
+}
+
+export const changeMultiStatus = async (ids: string[], status: string) => {
+    const products = await Promise.all(
+        ids.map(item => Product
+            .findByIdAndUpdate(item,{status},{runValidators: true, new: true})
+            .select("status")
+        )
+            
+    )
+    if(products.length === 0){
+        throw new ApiError(400,"No products have been change status")
+    }else if(products.length !== ids.length){
+        throw new ApiError(400,"Unable to change status all products")
+    }
+    return products
+} 
+
+export const changeMultiPosition = async (ids: {id: string, position: number}[]) => {
+    const products = await Promise.all(
+        ids.map(item => Product
+            .findByIdAndUpdate(item.id,{position: item.position},{runValidators: true, new: true})
+            .select("position")
+
+        )
+    );
+    if(products.length === 0){
+        throw new ApiError(400,"No products have been change position")
+    }else if(products.length !== ids.length){
+        throw new ApiError(400,"Unable to change position all products")
+    }
+    return products
 }
