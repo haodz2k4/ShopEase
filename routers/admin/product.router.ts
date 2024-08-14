@@ -11,6 +11,7 @@ router.get("/",cacheMiddleware(3600,groupKey),controller.index);
 router.get("/detail/:id",controller.detail) 
 router.patch("/change-status/:id",controller.changeStatus,clearCacheMiddleware(groupKey))
 router.patch("/change-multi/:type",controller.changeMulti,clearCacheMiddleware(groupKey))
-router.patch("/edit/:id",controller.edit)
-router.post("/create",upload.single('thumbnail'),uploadSingle,controller.createProduct)
+router.patch("/edit/:id",upload.single('thumbnail'),uploadSingle,controller.edit)
+router.post("/create",upload.single('thumbnail'),uploadSingle,controller.createProduct);
+router.patch("/delete/:id",controller.deleteProduct)
 export default router

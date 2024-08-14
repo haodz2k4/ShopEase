@@ -97,6 +97,13 @@ export const create = async (value: IProduct) => {
     return product
 }
 
-export const isExistsCategory_id = async (category_id: string) => {
+export const deleteProductById = async (id: string) => {
+    const product = await Product
+    .findByIdAndUpdate(id,{deleted: true},{new: true, runValidators: true})
+    .select("deleted")
     
+    if(!product){
+        throw new ApiError(404,"No products found")
+    }
+    return product
 }

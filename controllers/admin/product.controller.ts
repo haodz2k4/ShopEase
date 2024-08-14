@@ -79,3 +79,12 @@ export const createProduct = catchAsync(async (req: Request, res: Response, next
     const product = await ProductService.create(body);
     res.status(201).json({message: "Create product successful", product})
 })
+
+//[PATCH] "/admin/delete/:id"
+export const deleteProduct = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id 
+    const product = await ProductService.deleteProductById(id);
+    res.status(200).json({message: "Delete product successful", product})
+
+})
+
