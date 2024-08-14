@@ -1,6 +1,7 @@
 import { catchAsync } from "../../utils/catchAsync";
 import {pick} from "../../utils/pick";
 import { Request, Response } from "express";
+import redis from "../../config/redis";
 //helper 
 import paginate from "../../helpers/paginate.helper";
 //Service 
@@ -13,7 +14,12 @@ export const index = catchAsync(async (req: Request, res: Response) => {
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 15
     const pagination = await paginate(model('product'),filter,{page, limit})
+    
     const products = await ProductService.getProductsByQuery(filter,sort,pagination,"-deleted");
+    //handle cache 
+    const cacheKey = res.locals.cacheKey 
+    const cacheDuration = res.locals.cacheDuration
+    await redis.setex(cacheKey,cacheDuration,JSON.stringify(products))
     res.json({products, pagination})
 })
 //[GET] "/admin/products/detail/:id"
