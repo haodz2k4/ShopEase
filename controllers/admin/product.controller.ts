@@ -5,9 +5,9 @@ import { Request, Response } from "express";
 import * as ProductService from "../../services/product.services"
 //[GET] "/admin/products"
 export const index = catchAsync(async (req: Request, res: Response) => {
-    const filter = pick(req.query,["status"]);
+    const filter = pick(req.query,["status","title"]);
     const sort = pick(req.query,["sortKey","sortValue"])
-    const pagination = res.locals.pagination
+    const pagination = res.locals.pagination;
     const products = await ProductService.getProductsByQuery(filter,sort,pagination,"-deleted");
     res.json({products, pagination})
 })

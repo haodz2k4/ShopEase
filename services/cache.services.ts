@@ -26,6 +26,14 @@ export const deleteCache = async (key: string) => {
     }
 }
 
+export const setCacheGroup = async (key: string, cacheKey: string) => {
+    try {
+        await redis.sadd(key,cacheKey)
+    } catch (error) {
+        throw new Error("Error setUp cache: "+ error)
+    }
+}
+
 export const clearCacheGroup = async (key: string) => {
     try {
         const cacheKeys = await redis.smembers(key);

@@ -11,6 +11,8 @@ export const getProductsByQuery = async (filter: Record<string, any>, sort: Reco
     if (sort.sortKey && sort.sortValue) {
         sortOption[sort.sortKey] = sort.sortValue === 'desc' ? -1 : 1;
     }
+    //searching
+    filter.title = new RegExp(filter.title,"i")
     const products = await Product
         .find({ ...filter, deleted: false })
         .sort(sortOption)
@@ -19,7 +21,8 @@ export const getProductsByQuery = async (filter: Record<string, any>, sort: Reco
         .select(select); 
 
     await CacheService.setCache(cacheKey,products,3600)
-    return products;
+    await CacheService.setCacheGroup('products_cache',cacheKey)
+    return products;    
 }
 
 export const getProductById = async (id: string) :Promise<IProduct> => {
@@ -45,9 +48,13 @@ export const getProductBySlug = async (slug: string) :Promise<IProduct> => {
 }
 
 export const changeStatus = async (id: string, status: string) :Promise<IProduct> => {
-    const product = await Product.findByIdAndUpdate(id,{status: status},{new: true, runValidators: true}).select("status")
+    const product = await Product
+    .findByIdAndUpdate(id,{status: status},{new: true, runValidators: true}).select("status slug")
     if(!product){
         throw new ApiError(404,"Không tìm thấy sản phẩm tương ứng")
     }
+    //handle cache 
+    await CacheService.deleteCache(`product:${product.slug}`)
+    await CacheService.clearCacheGroup('products_cache')
     return product
 }
