@@ -30,3 +30,10 @@ export const changeQuantity = catchAsync(async(req: Request,res: Response) => {
     const stock = await StockService.changeQuantityById(id,quantity)
     res.status(200).json({message: "Updated quantity successfully", stock})
 })
+
+//[POST] "/admin/stocks/add"
+export const addStock = catchAsync(async (req: Request, res: Response) => {
+    const body = req.body
+    const stock = await StockService.addStock(body);
+    res.status(201).json({message: "Added stock successfully", stock})
+})

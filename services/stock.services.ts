@@ -40,6 +40,7 @@ export const getStocksByQuery = async (
     })
     .skip(pagination.skip)
     .limit(pagination.limit)
+    .sort({createdAt: "desc"})
     const filterStock = await stock.filter(item => item.product_id && item.supplier_id)
     return filterStock
 }
@@ -85,4 +86,10 @@ export const changeQuantityById = async (id: string, quantity: number) :Promise<
         throw new ApiError(404,"Stocks is not found")
     }
     return stock
+}
+
+export const addStock = async (value: IStock) :Promise<IStock> => {
+    const stock = await Stock.create(value)
+
+    return stock 
 }

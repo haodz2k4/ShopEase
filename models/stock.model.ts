@@ -5,7 +5,6 @@ export interface IStock {
     supplier_id:  Schema.Types.ObjectId
     wareHouse_id: Schema.Types.ObjectId
     quantity: number,
-    warehouseLocation: String,
     deleted:boolean
 }
 const stockSchema = new Schema<IStock>({
