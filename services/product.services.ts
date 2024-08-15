@@ -28,7 +28,14 @@ export const getProductById = async (id: string) :Promise<IProduct> => {
 }
 
 export const getProductBySlug = async (slug: string) :Promise<IProduct> => {
-    const product = await Product.findOne({slug, deleted: false, status: "active"})
+    const product = await Product
+    .findOne({slug, deleted: false, status: "active"})
+    .populate({
+        path: 'category_id',
+        select: 'title thumbnail slug',
+        match: {deleted: false, status: "active"}
+
+    })
     if(!product){
         throw new ApiError(404,"No products found")
     }
@@ -109,3 +116,4 @@ export const deleteProductById = async (id: string) => {
     }
     return product
 }
+

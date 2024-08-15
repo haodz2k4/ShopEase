@@ -30,8 +30,8 @@ export const index = catchAsync(async (req: Request, res: Response) => {
 
     //sort 
     const sort = pick(req.query,["sortKey","sortValue"])
-    const products = await ProductService.getProductsByQuery(filter,sort,pagination,"title thumbnail price discountPercentage slug")
-    console.log(filter)
+    const products = await ProductService.getProductsByQuery({...filter, status: "active"},sort,pagination,"title thumbnail price discountPercentage slug")
+ 
     res.json({products, pagination})
     
 })
@@ -41,14 +41,21 @@ export const category = catchAsync(async (req: Request, res: Response) => {
     const slug = req.params.slugCategory;
     const id = await CategoryService.convertSlugToId(slug)
     const filter = pick(req.query,["title"])
-
-    //pagination
+    const find = {...filter, category_id: id, status: "active"}
+    //pagination    
     const page = parseInt(req.query.page as string) | 1
     const limit = parseInt(req.query.limit as string) | 15;
-    const pagination = await paginate(model('product'),filter,{page,limit})
+    const pagination = await paginate(model('product'),find,{page,limit})
     //end pagination 
     const fieldSelect = "title thumbnail price discountPercentage slug"
-    const products = await ProductService.getProductsByQuery({...filter, category_id: id},{position: 'desc'},pagination,fieldSelect);
+    const products = await ProductService.getProductsByQuery(find,{position: 'desc'},pagination,fieldSelect);
     res.json({products, pagination})
 
+})
+
+//[GET] "/products/detail/:slug"
+export const detail = catchAsync(async (req: Request, res: Response) => {
+    const slug = req.params.slug;
+    const product = await ProductService.getProductBySlug(slug);
+    res.status(200).json({product})
 })

@@ -3,4 +3,5 @@ const router: Router = Router();
 import * as controller from "../../controllers/clients/product.controller"
 router.get("/",controller.index)
 router.get("/:slugCategory",controller.category)
+router.get("/detail/:slug",controller.detail)
 export default router
