@@ -53,7 +53,7 @@ export const createCategory = async(value: ICategory):Promise<ICategory> => {
 
 }
 
-export const editCategoryById = async (id: String, value: ICategory) :Promise<ICategory> => {
+export const updateCategoryById = async (id: String, value: ICategory) :Promise<ICategory> => {
     const category = await Category.findByIdAndUpdate(id, value,{runValidators: true, new: true});
     if(!category){
         throw new ApiError(404,'Category is not found')
@@ -67,3 +67,10 @@ export const existsCategoryId = async (id: string) :Promise<boolean>=> {
     return result !== null;
 }
 
+export const deleteCategoryById = async (id: string) :Promise<ICategory> => {
+    const category = await Category.findByIdAndUpdate(id,{deleted: true}).select("deleted")
+    if(!category){
+        throw new ApiError(404,"Category is not found")
+    }
+    return category
+}

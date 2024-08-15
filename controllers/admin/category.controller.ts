@@ -37,7 +37,15 @@ export const create = catchAsync(async (req: Request, res: Response):Promise<voi
 export const edit = catchAsync(async (req: Request, res: Response) :Promise<void> => {
     const id = req.params.id;
     const body = req.body
-    const category = await CategoryService.editCategoryById(id,body)
+    const category = await CategoryService.updateCategoryById(id,body)
 
     res.status(200).json({message: "updated category successfully", category})
+})
+
+//[PATCH] "/admin/categories/delete/:id"
+export const deleteCategory = catchAsync(async (req: Request, res: Response): Promise<void> => {
+    const id = req.params.id
+    const category = await CategoryService.deleteCategoryById(id);
+    res.status(200).json({message: "Deleted category successfullly", category})
+
 })
