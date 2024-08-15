@@ -18,10 +18,6 @@ export const index = catchAsync(async (req: Request, res: Response) => {
     const pagination = await paginate(model('product'),filter,{page, limit})
     
     const products = await ProductService.getProductsByQuery(filter,sort,pagination,"-deleted");
-    //handle cache 
-    const cacheKey = res.locals.cacheKey 
-    const cacheDuration = res.locals.cacheDuration
-    await redis.setex(cacheKey,cacheDuration,JSON.stringify(products))
     res.json({products, pagination})
 })
 //[GET] "/admin/products/detail/:id"

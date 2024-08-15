@@ -6,7 +6,7 @@ import paginate from "../../helpers/paginate.helper";
 //services 
 import * as CategoryService from "../../services/category.services";
 import { model } from "mongoose";
-//[GET] "/admin/products"
+//[GET] "/admin/categories"
 export const index = catchAsync(async (req: Request, res: Response): Promise<any> => {
 
     const filter = pick(req.query,["status","title"])
