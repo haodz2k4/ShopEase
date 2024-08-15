@@ -27,3 +27,23 @@ export const convertSlugToId = async (slug: string) :Promise<string> => {
     }
     return category.id
 }
+
+export const getCategoryById = async (id: string) => {
+    const category = await Category
+    .findOne({_id: id, deleted: false})
+    .populate('parent_category','title thumbnail')
+    if(!category){
+        throw new ApiError(404,'Category is not found')
+    }
+    return category
+}
+
+export const getDetailBySlug = async (slug: string) => {
+    const category = await Category
+    .findOne({slug, deleted: false, status: "active"})
+    .populate('parent_category','title thumbnail')
+    if(!category){
+        throw new ApiError(404,'Category is not found')
+    }
+    return category
+}

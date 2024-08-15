@@ -6,12 +6,12 @@ import * as controller from "../../controllers/admin/product.controller";
 //middleware 
 import { clearCacheMiddleware } from "../../middlewares/cache.middleware";
 import { uploadSingle } from "../../middlewares/uploadCloud.middleware";
-const groupKey = 'products_cache'
+import { CACHE_KEY_GROUP } from "../../config/cache";
 router.get("/",controller.index);
 router.get("/detail/:id",controller.detail) 
-router.patch("/change-status/:id",controller.changeStatus,clearCacheMiddleware(groupKey))
-router.patch("/change-multi/:type",controller.changeMulti,clearCacheMiddleware(groupKey))
-router.patch("/edit/:id",upload.single('thumbnail'),uploadSingle,controller.edit)
-router.post("/create",upload.single('thumbnail'),uploadSingle,controller.createProduct);
-router.patch("/delete/:id",controller.deleteProduct);
+router.patch("/change-status/:id",controller.changeStatus,clearCacheMiddleware(CACHE_KEY_GROUP.PRODUCTS))
+router.patch("/change-multi/:type",controller.changeMulti,clearCacheMiddleware(CACHE_KEY_GROUP.PRODUCTS))
+router.patch("/edit/:id",upload.single('thumbnail'),uploadSingle,controller.edit,clearCacheMiddleware(CACHE_KEY_GROUP.PRODUCTS))
+router.post("/create",upload.single('thumbnail'),uploadSingle,controller.createProduct,clearCacheMiddleware(CACHE_KEY_GROUP.PRODUCTS));
+router.patch("/delete/:id",controller.deleteProduct,clearCacheMiddleware(CACHE_KEY_GROUP.PRODUCTS));
 export default router

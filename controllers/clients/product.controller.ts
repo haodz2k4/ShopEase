@@ -1,4 +1,5 @@
 import {Request, Response, NextFunction} from "express"
+import redis from "../../config/redis";
 import { catchAsync } from "../../utils/catchAsync"
 import { pick } from "../../utils/pick"
 //helpers 
@@ -14,7 +15,7 @@ export const index = catchAsync(async (req: Request, res: Response) => {
     //range price
     const minPrice = parseInt(req.query.minPrice as string) 
     const maxPrice = parseInt(req.query.maxPrice as string)
-    if(minPrice && maxPrice){
+    if(!isNaN(minPrice) && !isNaN(maxPrice)){
         listQuery.push("price")
         req.query.price = rangePrice(minPrice, maxPrice)
     } 
@@ -22,17 +23,22 @@ export const index = catchAsync(async (req: Request, res: Response) => {
 
     //filter 
     const filter = pick(req.query,listQuery);
+    filter.status = "active"
     //pagination
-    const page = parseInt(req.query.page as string) | 1
-    const limit = parseInt(req.query.limit as string) | 15;
+    const page = parseInt(req.query.page as string) || 1
+    const limit = parseInt(req.query.limit as string) || 15;
     const pagination = await paginate(model('product'),filter,{page,limit})
     //end pagination 
 
     //sort 
     const sort = pick(req.query,["sortKey","sortValue"])
-    const products = await ProductService.getProductsByQuery({...filter, status: "active"},sort,pagination,"title thumbnail price discountPercentage slug")
- 
-    res.json({products, pagination})
+    const products = await ProductService.getProductsByQuery(filter,sort,pagination,"title thumbnail price discountPercentage slug")
+    const responsePayload = {products, pagination}
+    //caching 
+    const key = res.locals.cacheKey 
+    const duration = res.locals.cacheDuration 
+    await redis.setex(key,duration, JSON.stringify(responsePayload))
+    res.json(responsePayload)
     
 })
 
@@ -41,14 +47,15 @@ export const category = catchAsync(async (req: Request, res: Response) => {
     const slug = req.params.slugCategory;
     const id = await CategoryService.convertSlugToId(slug)
     const filter = pick(req.query,["title"])
-    const find = {...filter, category_id: id, status: "active"}
+    filter.category_id = id 
+    filter.status = "active"
     //pagination    
     const page = parseInt(req.query.page as string) | 1
     const limit = parseInt(req.query.limit as string) | 15;
-    const pagination = await paginate(model('product'),find,{page,limit})
+    const pagination = await paginate(model('product'),filter,{page,limit})
     //end pagination 
-    const fieldSelect = "title thumbnail price discountPercentage slug"
-    const products = await ProductService.getProductsByQuery(find,{position: 'desc'},pagination,fieldSelect);
+    const fieldSelect = "title thumbnail price discountPercentage slug";
+    const products = await ProductService.getProductsByQuery(filter,{position: 'desc'},pagination,fieldSelect);
     res.json({products, pagination})
 
 })
@@ -57,5 +64,8 @@ export const category = catchAsync(async (req: Request, res: Response) => {
 export const detail = catchAsync(async (req: Request, res: Response) => {
     const slug = req.params.slug;
     const product = await ProductService.getProductBySlug(slug);
+    const key = res.locals.cacheKey 
+    const duration = res.locals.cacheDuration;
+    await redis.setex(key,duration,JSON.stringify(product))
     res.status(200).json({product})
 })
