@@ -7,4 +7,6 @@ router.get("/",controller.index)
 router.get("/detail/:id",controller.detail)
 router.patch("/change-quantity/:id",controller.changeQuantity)
 router.post("/add",validate.create,controller.addStock)
+router.patch("/delete/:id",controller.deleteStock)
+router.patch("/edit/:id",validate.edit,controller.editStock)
 export default router

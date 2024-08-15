@@ -37,3 +37,18 @@ export const addStock = catchAsync(async (req: Request, res: Response) => {
     const stock = await StockService.addStock(body);
     res.status(201).json({message: "Added stock successfully", stock})
 })
+
+//[PATCH] "/admin/stocks/delete/:id"
+export const deleteStock = catchAsync(async (req: Request,res: Response) => {
+    const id = req.params.id;
+    const stock = await StockService.deleteStockById(id);
+    res.status(200).json({message: "Stock marked as deleted successfully", stock})
+})
+
+//[PATCH] "/admin/stocks/edit/:id"
+export const editStock = catchAsync(async (req: Request, res: Response) => {
+    const id = req.params.id;
+    const value = req.body
+    const stock = await StockService.editStockById(id,value)
+    res.status(200).json({message: "Stock updated successfully", stock})
+})

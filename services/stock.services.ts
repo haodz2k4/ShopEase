@@ -93,3 +93,21 @@ export const addStock = async (value: IStock) :Promise<IStock> => {
 
     return stock 
 }
+
+export const deleteStockById = async (id: string) :Promise<IStock> => {
+    const stock = await Stock.findByIdAndUpdate(
+        id,
+        {deleted: true},
+        {new: true, runValidators: true}
+    ).select("deleted");
+
+    if(!stock){
+        throw new ApiError(404,"Stock is not found")
+    }
+    return  stock
+}
+
+export const editStockById = async (id: string, value: IStock) => {
+    const stock = await Stock.findByIdAndUpdate(id, value);
+    return stock
+}
