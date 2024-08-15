@@ -1,4 +1,4 @@
-import Category from "../models/category.model";
+import Category, { ICategory } from "../models/category.model";
 import ApiError from "../utils/ApiError";
 
 export const getCategoriesByQuery = async (
@@ -6,7 +6,7 @@ export const getCategoriesByQuery = async (
      sort: Record<string, any>,
      pagination: {limit: number, skip: number},
      select: string
-    ) => { 
+    ):Promise<ICategory[]> => { 
 
     if(sort.sortKey && sort.sortValue){
         sort[sort.sortKey] 
@@ -28,7 +28,7 @@ export const convertSlugToId = async (slug: string) :Promise<string> => {
     return category.id
 }
 
-export const getCategoryById = async (id: string) => {
+export const getCategoryById = async (id: string) :Promise<ICategory> => {
     const category = await Category
     .findOne({_id: id, deleted: false})
     .populate('parent_category','title thumbnail')
@@ -38,7 +38,7 @@ export const getCategoryById = async (id: string) => {
     return category
 }
 
-export const getDetailBySlug = async (slug: string) => {
+export const getDetailBySlug = async (slug: string):Promise<ICategory> => {
     const category = await Category
     .findOne({slug, deleted: false, status: "active"})
     .populate('parent_category','title thumbnail')
@@ -46,4 +46,15 @@ export const getDetailBySlug = async (slug: string) => {
         throw new ApiError(404,'Category is not found')
     }
     return category
+}
+
+export const createCategory = async(value: ICategory):Promise<ICategory> => {
+    return await Category.create(value);
+
+}
+
+export const existsCategoryId = async (id: string) :Promise<boolean>=> {
+    const result = await Category.exists({_id: id});
+    console.log(result)
+    return result !== null;
 }

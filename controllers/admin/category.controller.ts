@@ -19,9 +19,18 @@ export const index = catchAsync(async (req: Request, res: Response): Promise<voi
     res.json({categories, paginations})
 })
 
-//[GET] "/admin/detail/:id"
+//[GET] "/admin/categories/detail/:id"
 export const detail = catchAsync(async (req: Request, res: Response): Promise<void> => {
     const id = req.params.id
     const category = await CategoryService.getCategoryById(id);
     res.json({category})
 })
+
+//[POST] "/admin/categories/create"
+export const create = catchAsync(async (req: Request, res: Response):Promise<void> => {
+    const body = req.body;
+    const category = await CategoryService.createCategory(body);
+    res.status(201).json({message: "Added Category successfully", category})
+}) 
+
+//[PATCH]
