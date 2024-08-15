@@ -8,6 +8,7 @@ import paginate from "../../helpers/paginate.helper";
 //services
 import * as ProductService from "../../services/product.services";
 import * as CategoryService from "../../services/category.services";
+import { getTotalQuantities } from "../../services/stock.services";
 import { model } from "mongoose";
 //[GET] "/products"
 export const index = catchAsync(async (req: Request, res: Response) => {
@@ -33,6 +34,11 @@ export const index = catchAsync(async (req: Request, res: Response) => {
     //sort 
     const sort = pick(req.query,["sortKey","sortValue"])
     const products = await ProductService.getProductsByQuery(filter,sort,pagination,"title thumbnail price discountPercentage slug")
+    //add field quantity 
+    const quantities = await Promise.all(products.map(item => getTotalQuantities(item._id)))
+    products.forEach((item, index) => {
+        item.quantity = quantities[index];
+    })
     const responsePayload = {products, pagination}
     //caching 
     const key = res.locals.cacheKey 
@@ -56,6 +62,11 @@ export const category = catchAsync(async (req: Request, res: Response) => {
     //end pagination 
     const fieldSelect = "title thumbnail price discountPercentage slug";
     const products = await ProductService.getProductsByQuery(filter,{position: 'desc'},pagination,fieldSelect);
+    //add field quantity 
+    const quantities = await Promise.all(products.map(item => getTotalQuantities(item._id)))
+    products.forEach((item, index) => {
+        item.quantity = quantities[index]
+    })
     res.json({products, pagination})
 
 })
@@ -64,6 +75,8 @@ export const category = catchAsync(async (req: Request, res: Response) => {
 export const detail = catchAsync(async (req: Request, res: Response) => {
     const slug = req.params.slug;
     const product = await ProductService.getProductBySlug(slug);
+    product.quantity = await getTotalQuantities(product._id)
+    //handle caching 
     const key = res.locals.cacheKey 
     const duration = res.locals.cacheDuration;
     await redis.setex(key,duration,JSON.stringify(product))

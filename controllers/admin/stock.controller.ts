@@ -52,3 +52,4 @@ export const editStock = catchAsync(async (req: Request, res: Response) => {
     const stock = await StockService.editStockById(id,value)
     res.status(200).json({message: "Stock updated successfully", stock})
 })
+

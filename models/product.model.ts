@@ -1,18 +1,19 @@
-import { Schema, model } from 'mongoose'; 
+import { Schema, model, Document } from 'mongoose'; 
 import {createSlug,createUniqueSlug } from '../helpers/slug.helper';
-export interface IProduct{
-    _id: Schema.Types.ObjectId,
-    title: string,
-    category_id: Schema.Types.ObjectId,
-    description: string,
-    highlighted: "0" | "1",
-    thumbnail: string,
-    price: number,
-    discountPercentage: number,
-    deleted: boolean,
-    position: number,
-    slug: string,
-    status: ("active" | "inactive"),
+export interface IProduct extends Document{
+    _id: Schema.Types.ObjectId
+    title: string
+    category_id: Schema.Types.ObjectId
+    description: string
+    highlighted: "0" | "1"
+    thumbnail: string
+    price: number
+    discountPercentage: number
+    deleted: boolean
+    position: number
+    slug: string
+    status: ("active" | "inactive")
+    quantity?: number
     
 }
 const productSchema = new Schema<IProduct>({

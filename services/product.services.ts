@@ -15,12 +15,15 @@ export const getProductsByQuery = async (filter: Record<string, any>, sort: Reco
         .sort(sortOption)
         .limit(pagination.limit)
         .skip(pagination.skip)
-        .select(select); 
+        .select(select)
+        .lean()
     return products;    
 }
 
 export const getProductById = async (id: string) :Promise<IProduct> => {
-    const product = await Product.findOne({_id: id, deleted: false})
+    const product = await Product
+        .findOne({_id: id, deleted: false})
+        .lean()
     if(!product){
         throw new ApiError(404,"No products found")
     }
@@ -34,8 +37,8 @@ export const getProductBySlug = async (slug: string) :Promise<IProduct> => {
         path: 'category_id',
         select: 'title thumbnail slug',
         match: {deleted: false, status: "active"}
-
     })
+    .lean()
     if(!product){
         throw new ApiError(404,"No products found")
     }

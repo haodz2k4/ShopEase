@@ -111,3 +111,13 @@ export const editStockById = async (id: string, value: IStock) => {
     const stock = await Stock.findByIdAndUpdate(id, value);
     return stock
 }
+
+export const getTotalQuantities = async (product_id: any) :Promise<number> => {
+    const stocks = await Stock.find({deleted: false, product_id}).select("quantity")
+    let total = 0
+    for(const item of stocks){
+        total += item.quantity
+    }
+    return total
+    
+}
