@@ -16,6 +16,8 @@ app.use(bodyParser.json())
 //router
 import adminRouter from "./routers/admin/index.router";
 adminRouter(app)
+import clientRouter from "./routers/clients/index.router";
+clientRouter(app)
 //error handle 
 import { errorHandler } from './middlewares/handleError.middleware';
 app.use(errorHandler)

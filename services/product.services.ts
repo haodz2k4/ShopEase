@@ -1,13 +1,16 @@
 import Product,{IProduct} from "../models/product.model";
 import ApiError from "../utils/ApiError";
-export const getProductsByQuery = async (filter: Record<string, any>, sort: Record<string, any>,pagination: any,select: string) :Promise<IProduct[]> => {
+export const getProductsByQuery = async (filter: Record<string, any>, sort: Record<string, any>,pagination: any,select: string = "") :Promise<IProduct[]> => {
     
     const sortOption: Record<string, any> = {};
     if (sort.sortKey && sort.sortValue) {
         sortOption[sort.sortKey] = sort.sortValue === 'desc' ? -1 : 1;
     }
     //searching
-    filter.title = new RegExp(filter.title,"i")
+    if(filter.title){
+        
+        filter.title = new RegExp(filter.title,"i")
+    }
     const products = await Product
         .find({ ...filter, deleted: false })
         .sort(sortOption)
