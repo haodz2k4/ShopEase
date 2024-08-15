@@ -8,7 +8,6 @@ export const getProductsByQuery = async (filter: Record<string, any>, sort: Reco
     }
     //searching
     if(filter.title){
-        
         filter.title = new RegExp(filter.title,"i")
     }
     const products = await Product
