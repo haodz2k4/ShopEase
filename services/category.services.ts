@@ -1,4 +1,5 @@
 import Category from "../models/category.model";
+import ApiError from "../utils/ApiError";
 
 export const getCategoriesByQuery = async (
      filter: Record<string, any>,
@@ -17,4 +18,12 @@ export const getCategoriesByQuery = async (
     .skip(pagination.skip)
     .select(select)
     return category
+}
+
+export const convertSlugToId = async (slug: string) :Promise<string> => {
+    const category = await Category.findOne({slug}).select("id")
+    if(!category){
+      throw new ApiError(404,"Category is not found")
+    }
+    return category.id
 }
