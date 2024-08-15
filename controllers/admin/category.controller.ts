@@ -33,4 +33,11 @@ export const create = catchAsync(async (req: Request, res: Response):Promise<voi
     res.status(201).json({message: "Added Category successfully", category})
 }) 
 
-//[PATCH]
+//[PATCH] "/admin/categories/edit/:id"
+export const edit = catchAsync(async (req: Request, res: Response) :Promise<void> => {
+    const id = req.params.id;
+    const body = req.body
+    const category = await CategoryService.editCategoryById(id,body)
+
+    res.status(200).json({message: "updated category successfully", category})
+})

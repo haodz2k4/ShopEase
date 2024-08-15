@@ -8,4 +8,5 @@ import { uploadSingle } from '../../middlewares/uploadCloud.middleware';
 router.get("/",controller.index);
 router.get("/detail/:id",controller.detail)
 router.post("/create",upload.single('thumbnail'),uploadSingle,controller.create)
+router.patch("/edit/:id",upload.single('thumbnail'),uploadSingle,controller.edit)
 export default router
