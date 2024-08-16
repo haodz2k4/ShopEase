@@ -1,7 +1,7 @@
 import ApiError from '../utils/ApiError';
 import Supplier, {ISupplier} from './../models/supplier.model';
 
-export const getSuppliers = async (filter: Record<string,any>,pagination: any):Promise<ISupplier[]> => {
+export const getSuppliers = async (filter: Record<string,any>,pagination: Record<"limit"| "skip",number>):Promise<ISupplier[]> => {
     const suppliers = await Supplier
         .find(filter)
         .limit(pagination.limit)

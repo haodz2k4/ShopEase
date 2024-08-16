@@ -24,7 +24,7 @@ export const edit = catchAsync(async (req: Request, res: Response) => {
     const id = req.params.id 
     const body = req.body
     const role = await RoleService.editRole(id,body);
-    res.status(200).json({message: "Edited role successfully"})
+    res.status(200).json({message: "Edited role successfully", role})
 })
 
 //[PATCH] "/admin/roles/delete/:id"

@@ -7,6 +7,8 @@ import stockRouter from "./stock.router";
 import supplierRouter from "./supplier.router";
 import wareHouseRouter from "./wareHouse.router";
 import roleRouter from "./role.router";
+import accountRouter from "./account.router"
+
 const path = `/api/${system.prefixAdmin}`
 export default (app: Express) => {
     app.use(`${path}/products`,productRouter)
@@ -15,4 +17,5 @@ export default (app: Express) => {
     app.use(`${path}/suppliers`,supplierRouter)
     app.use(`${path}/ware-houses`,wareHouseRouter)
     app.use(`${path}/roles`,roleRouter)
+    app.use(`${path}/accounts`,accountRouter)
 }

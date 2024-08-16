@@ -4,7 +4,7 @@ import ApiError from "../utils/ApiError"
 export const getStocksByQuery = async (
         productsFilter : Record<string,any>, 
         stocksFilter: Record<string, any>,
-        pagination: any
+        pagination: Record<"limit"| "skip",number>
     ) :Promise<IStock[]>=> { 
 
 

@@ -1,6 +1,6 @@
 import Product,{IProduct} from "../models/product.model";
 import ApiError from "../utils/ApiError";
-export const getProductsByQuery = async (filter: Record<string, any>, sort: Record<string, any>,pagination: any,select: string = "") :Promise<IProduct[]> => {
+export const getProductsByQuery = async (filter: Record<string, any>, sort: Record<string, any>,pagination: Record<"limit"| "skip",number>,select: string = "") :Promise<IProduct[]> => {
     
     const sortOption: Record<string, any> = {};
     if (sort.sortKey && sort.sortValue) {

@@ -4,7 +4,6 @@ import { pick } from "../../utils/pick";
 import paginate from "../../helpers/paginate.helper";
 //services 
 import * as SupplierService from "../../services/supplier.services";
-import { model } from "mongoose";
 //[GET] "/admin/suppliers"
 export const index = catchAsync( async (req: Request,res: Response) :Promise<void> => {
     const filter = pick(req.query,["name","status"])

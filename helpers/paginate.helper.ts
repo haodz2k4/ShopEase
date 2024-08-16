@@ -1,4 +1,3 @@
-import { Model } from "mongoose"
 
 interface PaginationOptions {
     page: number,
@@ -12,7 +11,7 @@ interface PaginationResult {
     totalDocuments: number;
 }
 
-export default async (totalDocuments: number, options: PaginationOptions) :Promise<PaginationResult> => {
+export default (totalDocuments: number, options: PaginationOptions) :PaginationResult => {
     const { page, limit } = options;
     const countPages = Math.ceil(totalDocuments / limit);
     const skip = (page - 1) * limit;

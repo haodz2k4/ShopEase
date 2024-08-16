@@ -29,7 +29,7 @@ export const index = catchAsync(async (req: Request, res: Response) => {
     const limit = parseInt(req.query.limit as string) || 15;
 
     const totalDoucment = await ProductService.getTotalProductByQuery(filter)
-    const pagination = await paginate(totalDoucment,{page,limit})
+    const pagination = paginate(totalDoucment,{page,limit})
     //end pagination 
 
     //sort 
@@ -61,7 +61,7 @@ export const category = catchAsync(async (req: Request, res: Response) => {
     const limit = parseInt(req.query.limit as string) | 15;
 
     const totalDoucment = await ProductService.getTotalProductByQuery(filter)
-    const pagination = await paginate(totalDoucment,{page,limit})
+    const pagination = paginate(totalDoucment,{page,limit})
     //end pagination 
     const fieldSelect = "title thumbnail price discountPercentage slug";
     const products = await ProductService.getProductsByQuery(filter,{position: 'desc'},pagination,fieldSelect);

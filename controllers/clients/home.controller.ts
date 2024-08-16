@@ -13,7 +13,7 @@ export const index = catchAsync(async (req: Request, res: Response) => {
     const limit = parseInt(req.query.limitHightLightTed as string) | 30
 
     const totalDoucment = await ProductService.getTotalProductByQuery(filter)
-    const pagination = await paginate(totalDoucment,{page, limit})
+    const pagination = paginate(totalDoucment,{page, limit})
     const hightLightedProducts = await ProductService
         .getProductsByQuery(
             filter,

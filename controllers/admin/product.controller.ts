@@ -18,7 +18,7 @@ export const index = catchAsync(async (req: Request, res: Response) => {
     const page = parseInt(req.query.page as string) || 1
     const limit = parseInt(req.query.limit as string) || 15 
     const totalDoucment = await ProductService.getTotalProductByQuery(filter)
-    const pagination = await paginate(totalDoucment,{page, limit})
+    const pagination = paginate(totalDoucment,{page, limit})
     
     const products = await ProductService.getProductsByQuery(filter,sort,pagination,"-deleted");
     const quantities = await Promise.all(products.map(item => getTotalQuantities(item._id)))

@@ -4,7 +4,7 @@ import ApiError from "../utils/ApiError";
 export const getCategoriesByQuery = async (
      filter: Record<string, any>,
      sort: Record<string, any>,
-     pagination: {limit: number, skip: number},
+     pagination: Record<"limit"| "skip",number>,
      select: string
     ):Promise<ICategory[]> => { 
 

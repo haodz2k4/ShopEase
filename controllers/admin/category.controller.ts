@@ -15,7 +15,7 @@ export const index = catchAsync(async (req: Request, res: Response): Promise<voi
     const limit = parseInt(req.query.page as string) | 15
 
     const totalDocument = await CategoryService.getTotalCategoryByQuery(filter)
-    const paginations = await paginate(totalDocument,{page, limit});
+    const paginations = paginate(totalDocument,{page, limit});
     const selectField = "-deleted -slug"
     const categories = await CategoryService.getCategoriesByQuery(filter, sort,paginations,selectField);
     res.json({categories, paginations})

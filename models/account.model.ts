@@ -8,6 +8,8 @@ export interface IAccount {
     phone: string,
     role_id: Schema.Types.ObjectId,
     birthDate: Date
+    deleted: boolean,
+    status: "active" | "inactive"
 }
 
 const accountSchema = new Schema<IAccount>({
@@ -17,8 +19,17 @@ const accountSchema = new Schema<IAccount>({
     email: {type: String, required: true, unique: true},
     password: {type: String, required: true},
     phone: {type: String, required: true},
-    role_id: {type: Schema.Types.ObjectId, required: true, ref: 'RoleV2'},
-    birthDate: Date
+    role_id: {type: Schema.Types.ObjectId, required: true, ref: 'role'},
+    birthDate: Date,
+    deleted: {
+        type: Boolean,
+        default: false
+    },
+    status: {
+        type: String,
+        enum: ["active","inactive"],
+        default: "active"
+    }
 },{timestamps: true})
 
 export default model<IAccount>("account",accountSchema)
