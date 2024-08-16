@@ -16,6 +16,13 @@ export const index = catchAsync(async (req: Request, res: Response) => {
 
     const accounts = await AccountService.getAccountsByQuery(filter, pagination);
 
-    res.json(accounts)
+    res.json({accounts, pagination})
 }) 
 
+
+//[POST] "/admin/create"
+export const create = catchAsync(async (req: Request, res: Response) => {
+    const body = req.body;
+    const account = await AccountService.createAccount(body);
+    res.status(201).json({message: "Created account successfully", account})
+})

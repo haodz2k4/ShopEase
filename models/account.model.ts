@@ -1,4 +1,6 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, Model } from "mongoose";
+import bcrypt from "bcrypt"
+
 export interface IAccount {
     fullName: string,
     description: string,
@@ -12,7 +14,15 @@ export interface IAccount {
     status: "active" | "inactive"
 }
 
-const accountSchema = new Schema<IAccount>({
+interface AccountModel extends Model<IAccount> {
+    isEmailExists(email: string, excludeAccountId?: Schema.Types.ObjectId): Promise<boolean>
+}
+
+interface IAccountMethods {
+    isPasswordMatch(password: string): Promise<boolean>
+}
+
+const accountSchema = new Schema<IAccount, AccountModel>({
     fullName: {type: String, required: true, min: 3, max: 20},
     description: String,
     avatar: String,
@@ -32,4 +42,21 @@ const accountSchema = new Schema<IAccount>({
     }
 },{timestamps: true})
 
-export default model<IAccount>("account",accountSchema)
+accountSchema.statics.isEmailExists = async function(email: string, excludeAccountId?: Schema.Types.ObjectId):Promise<boolean> {
+    const account = await this.exists({email, _id: { $ne: excludeAccountId }})
+    return !!account
+}
+
+accountSchema.methods.isPasswordMatch = async function (password: string):Promise<boolean> {
+    return bcrypt.compare(password, this.password);
+  };
+
+accountSchema.pre('save', async function(next) {
+    if(this.isModified('password')) {
+        this.password = await bcrypt.hash(this.password, 10)
+    }
+
+    next()
+})
+
+export default model<IAccount,AccountModel>("account",accountSchema)
