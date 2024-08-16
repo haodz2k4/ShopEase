@@ -1,5 +1,5 @@
 import { model, Schema } from "mongoose";
-interface IWareHouse {
+export interface IWareHouse {
     name: string,
     address: {
         city: string,
