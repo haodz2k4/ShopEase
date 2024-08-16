@@ -1,7 +1,5 @@
 import {Request, Response,NextFunction} from "express";
 import { catchAsync } from "../../utils/catchAsync";
-import { pick } from "../../utils/pick";
-import { model } from "mongoose";
 //helpers
 import paginate from "../../helpers/paginate.helper";
 //services 
@@ -13,7 +11,9 @@ export const index = catchAsync(async (req: Request, res: Response) => {
 
     const page = parseInt(req.query.pageHightLightTed as string) | 1
     const limit = parseInt(req.query.limitHightLightTed as string) | 30
-    const pagination = await paginate(model('product'),filter,{page, limit})
+
+    const totalDoucment = await ProductService.getTotalProductByQuery(filter)
+    const pagination = await paginate(totalDoucment,{page, limit})
     const hightLightedProducts = await ProductService
         .getProductsByQuery(
             filter,

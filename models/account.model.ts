@@ -4,6 +4,7 @@ export interface IAccount {
     description: string,
     avatar: string,
     email: string,
+    password: string,
     phone: string,
     role_id: Schema.Types.ObjectId,
     birthDate: Date
@@ -14,6 +15,7 @@ const accountSchema = new Schema<IAccount>({
     description: String,
     avatar: String,
     email: {type: String, required: true, unique: true},
+    password: {type: String, required: true},
     phone: {type: String, required: true},
     role_id: {type: Schema.Types.ObjectId, required: true, ref: 'RoleV2'},
     birthDate: Date

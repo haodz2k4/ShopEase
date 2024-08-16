@@ -20,6 +20,10 @@ export const getCategoriesByQuery = async (
     return category
 }
 
+export const getTotalCategoryByQuery = async (filter: Record<string, any>) :Promise<number> => {
+    return await Category.countDocuments(filter)
+}
+
 export const convertSlugToId = async (slug: string) :Promise<string> => {
     const category = await Category.findOne({slug}).select("id")
     if(!category){

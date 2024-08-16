@@ -20,6 +20,10 @@ export const getProductsByQuery = async (filter: Record<string, any>, sort: Reco
     return products;    
 }
 
+export const getTotalProductByQuery = async (filter: Record<string , any>) :Promise<number> => {
+    return await Product.countDocuments(filter)
+}
+
 export const getProductById = async (id: string) :Promise<IProduct> => {
     const product = await Product
         .findOne({_id: id, deleted: false})

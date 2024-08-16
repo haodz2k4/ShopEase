@@ -12,7 +12,8 @@ export const index = catchAsync( async (req: Request,res: Response) :Promise<voi
     const stocksFilter = pick(req.query,["name"])
     //pagination 
     const limit = parseInt(req.query.limit as string) | 20
-    const pagination = await paginte(model('stock'),{deleted: false},{page: 1,limit})
+    const totalDocument = await StockService.getTotalStock()
+    const pagination = await paginte(totalDocument,{page: 1,limit})
     const stocks = await StockService.getStocksByQuery(productsFilter,stocksFilter,pagination)
     res.json({stocks, pagination})
 }) 

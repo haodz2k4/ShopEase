@@ -45,6 +45,10 @@ export const getStocksByQuery = async (
     return filterStock
 }
 
+export const getTotalStock= async () :Promise<number> => {
+    return await Stock.countDocuments()
+}
+
 export const getStockById = async (id: string) :Promise<IStock> => {
     const stock = await Stock
         .findOne({_id: id, deleted: false})

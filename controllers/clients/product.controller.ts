@@ -9,7 +9,6 @@ import paginate from "../../helpers/paginate.helper";
 import * as ProductService from "../../services/product.services";
 import * as CategoryService from "../../services/category.services";
 import { getTotalQuantities } from "../../services/stock.services";
-import { model } from "mongoose";
 //[GET] "/products"
 export const index = catchAsync(async (req: Request, res: Response) => {
     const listQuery: string[] = ["title"]
@@ -28,7 +27,9 @@ export const index = catchAsync(async (req: Request, res: Response) => {
     //pagination
     const page = parseInt(req.query.page as string) || 1
     const limit = parseInt(req.query.limit as string) || 15;
-    const pagination = await paginate(model('product'),filter,{page,limit})
+
+    const totalDoucment = await ProductService.getTotalProductByQuery(filter)
+    const pagination = await paginate(totalDoucment,{page,limit})
     //end pagination 
 
     //sort 
@@ -58,7 +59,9 @@ export const category = catchAsync(async (req: Request, res: Response) => {
     //pagination    
     const page = parseInt(req.query.page as string) | 1
     const limit = parseInt(req.query.limit as string) | 15;
-    const pagination = await paginate(model('product'),filter,{page,limit})
+
+    const totalDoucment = await ProductService.getTotalProductByQuery(filter)
+    const pagination = await paginate(totalDoucment,{page,limit})
     //end pagination 
     const fieldSelect = "title thumbnail price discountPercentage slug";
     const products = await ProductService.getProductsByQuery(filter,{position: 'desc'},pagination,fieldSelect);

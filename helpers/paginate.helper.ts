@@ -12,10 +12,8 @@ interface PaginationResult {
     totalDocuments: number;
 }
 
-export default async (model: Model<any>,filter: Record<string,any>, options: PaginationOptions) :Promise<PaginationResult> => {
+export default async (totalDocuments: number, options: PaginationOptions) :Promise<PaginationResult> => {
     const { page, limit } = options;
-
-    const totalDocuments = await model.countDocuments(filter); 
     const countPages = Math.ceil(totalDocuments / limit);
     const skip = (page - 1) * limit;
 

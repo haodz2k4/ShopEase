@@ -9,6 +9,10 @@ export const getSuppliers = async (filter: Record<string,any>,pagination: any):P
     return suppliers
 }
 
+export const getTotalSupplierByQuery = async (filter: Record<string, any>) :Promise<number> => {
+    return await Supplier.countDocuments(filter)
+}
+
 export const createSupplier = async (value: ISupplier):Promise<ISupplier> => {
     return await Supplier.create(value)
 }

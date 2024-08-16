@@ -10,7 +10,9 @@ export const index = catchAsync( async (req: Request,res: Response) :Promise<voi
     const filter = pick(req.query,["name","status"])
     const page = parseInt(req.query.page as string) | 1
     const limit = parseInt(req.query.limit as string) | 10
-    const pagination = paginate(model('suppliers'),filter,{page, limit})
+
+    const totalDocument = await SupplierService.getTotalSupplierByQuery(filter)
+    const pagination = paginate(totalDocument,{page, limit})
     const suppliers = await SupplierService.getSuppliers(filter,pagination)
     res.json({suppliers})
 })
