@@ -26,3 +26,18 @@ export const create = catchAsync(async (req: Request, res: Response) => {
     const account = await AccountService.createAccount(body);
     res.status(201).json({message: "Created account successfully", account})
 })
+
+//[PATCH] "/admin/edit/:id"
+export const edit = catchAsync(async (req: Request, res: Response) => {
+    const id = req.params.id
+    const body = req.body
+    const account = await AccountService.editAccount(id,body);
+    res.status(200).json({message: "Edited account successfully",account})
+})
+
+//[PATCH] "/admin/delete/:id"
+export const deleteAccount = catchAsync(async (req: Request, res: Response) => {
+    const id = req.params.id
+    const account = await AccountService.deleteAccountById(id);
+    res.status(200).json({message: "Deleted account successfully", account})
+})
