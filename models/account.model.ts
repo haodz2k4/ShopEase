@@ -14,15 +14,17 @@ export interface IAccount {
     status: "active" | "inactive"
 }
 
-interface AccountModel extends Model<IAccount> {
-    isEmailExists(email: string, excludeAccountId?: Schema.Types.ObjectId): Promise<boolean>
-}
-
 interface IAccountMethods {
     isPasswordMatch(password: string): Promise<boolean>
 }
 
-const accountSchema = new Schema<IAccount, AccountModel>({
+interface AccountModel extends Model<IAccount,{}, IAccountMethods> {
+    isEmailExists(email: string, excludeAccountId?: Schema.Types.ObjectId): Promise<boolean>
+}
+
+
+
+const accountSchema = new Schema<IAccount, AccountModel,IAccountMethods>({
     fullName: {type: String, required: true, min: 3, max: 20},
     description: String,
     avatar: String,

@@ -1,6 +1,5 @@
 import Account,{IAccount} from "../models/account.model";
 import ApiError from "../utils/ApiError";
-
 export const getAccountsByQuery = async  (filter: Record<string, any>, pagination: Record<"skip" | "limit", number>):Promise<IAccount[]> => {
     const accounts = await Account
     .find({...filter, deleted: false})
@@ -11,7 +10,12 @@ export const getAccountsByQuery = async  (filter: Record<string, any>, paginatio
     return accounts
 }
 
-export const getAccount = async (id: string) :Promise<IAccount> => {
+export const getAccountByEmail = async (email: string) => {
+    const account = await Account.findOne({email, deleted: false})
+    return account
+}
+
+export const getAccount = async (id: string) => {
     const account = await Account.findOne({_id: id, deleted: false})
     if(!account){
         throw new ApiError(404,"Account is not found")
@@ -23,7 +27,7 @@ export const getTotalAccountByQuery = async (filter: Record<string, any>) :Promi
     return await Account.countDocuments({...filter, deleted: false})
 }
 
-export const createAccount = async (value: IAccount) :Promise<IAccount> => {
+export const createAccount = async (value: IAccount) => {
 
     const isExists= await Account.isEmailExists(value.email);
     if(isExists){
@@ -33,7 +37,7 @@ export const createAccount = async (value: IAccount) :Promise<IAccount> => {
   
 }
 
-export const editAccount = async (id:string,value: IAccount) :Promise<IAccount> => {
+export const editAccount = async (id:string,value: IAccount)=> {
     const isExists= await Account.isEmailExists(value.email);
     if(isExists && value.email){
         throw new ApiError(404,"Email already exists")
@@ -45,7 +49,7 @@ export const editAccount = async (id:string,value: IAccount) :Promise<IAccount> 
     return account
 } 
 
-export const deleteAccountById = async (id: string) :Promise<IAccount> => {
+export const deleteAccountById = async (id: string) => {
     const account = await Account.findByIdAndUpdate(id,{deleted: true}).select("deleted")
     if(!account){
         throw new ApiError(404, "Account is not found")

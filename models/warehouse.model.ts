@@ -1,4 +1,4 @@
-import { model, Schema } from "mongoose";
+import { Model, model, Schema } from "mongoose";
 export interface IWareHouse {
     name: string,
     address: {
@@ -10,7 +10,11 @@ export interface IWareHouse {
     email: string,
 }
 
-const wareHouseSchema = new Schema<IWareHouse>({
+interface WareHouseModel extends Model<IWareHouse> {
+    isExistsEmail(email: string) : Promise<boolean>
+}
+
+const wareHouseSchema = new Schema<IWareHouse,WareHouseModel>({
     name: {type: String, required: true, minlength: 5, maxlength: 50},
     address: {
         city: {type: String, required: true},
@@ -19,6 +23,11 @@ const wareHouseSchema = new Schema<IWareHouse>({
     },
     phone: {type: String, required: true, unique: true},
     email: {type: String, required: true, unique: true},
-},{timestamps: true})
+},{timestamps: true}) 
 
-export default model("wareHouse",wareHouseSchema)
+wareHouseSchema.statics.isExistsEmail = async function(email: string): Promise<boolean> {
+    const wareHouse = await this.findOne({email});
+    return !!wareHouse
+}
+
+export default model<IWareHouse, WareHouseModel>("wareHouse",wareHouseSchema)

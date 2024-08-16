@@ -28,6 +28,10 @@ export const editWareHouseById = async (id: string, value: IWareHouse) :Promise<
 }
 
 export const createWareHouse = async (body: IWareHouse):Promise<IWareHouse> => {
+    
+    if(await WareHouse.isExistsEmail(body.email)){
+        throw new ApiError(404, "Email already exists")
+    }
     return await WareHouse.create(body)
 }
 
