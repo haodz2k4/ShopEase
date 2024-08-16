@@ -34,3 +34,6 @@ export const deleteRole = catchAsync(async (req: Request,res: Response) => {
     const role = await RoleService.deleteRole(id);
     res.status(200).json({message: "Deleted role successfully", role})
 })
+
+
+//   PERMISSION  \\  
