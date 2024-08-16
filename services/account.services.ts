@@ -15,7 +15,7 @@ export const getAccountByEmail = async (email: string) => {
     return account
 }
 
-export const getAccount = async (id: string) => {
+export const getAccountById = async (id: string) => {
     const account = await Account.findOne({_id: id, deleted: false})
     if(!account){
         throw new ApiError(404,"Account is not found")

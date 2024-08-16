@@ -1,3 +1,4 @@
+import { requireAuth } from './../../middlewares/admin/auth.middleware';
 import {Express} from "express"
 import system from "../../config/system"
 //routers 
@@ -12,12 +13,12 @@ import authRouter from "./auth.router";
 
 const path = `/api/${system.prefixAdmin}`
 export default (app: Express) => {
-    app.use(`${path}/products`,productRouter)
-    app.use(`${path}/categories`,categoryRouter)
-    app.use(`${path}/stocks`,stockRouter)
-    app.use(`${path}/suppliers`,supplierRouter)
-    app.use(`${path}/ware-houses`,wareHouseRouter)
-    app.use(`${path}/roles`,roleRouter)
-    app.use(`${path}/accounts`,accountRouter)
+    app.use(`${path}/products`,requireAuth,productRouter)
+    app.use(`${path}/categories`,requireAuth,categoryRouter)
+    app.use(`${path}/stocks`,requireAuth,stockRouter)
+    app.use(`${path}/suppliers`,requireAuth,supplierRouter)
+    app.use(`${path}/ware-houses`,requireAuth,wareHouseRouter)
+    app.use(`${path}/roles`,requireAuth,roleRouter)
+    app.use(`${path}/accounts`,requireAuth,accountRouter)
     app.use(`${path}/auth`,authRouter)
 }
