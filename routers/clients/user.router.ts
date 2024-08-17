@@ -7,4 +7,5 @@ router.post("/login",controller.login)
 router.get("/logout",controller.logout)
 router.get("/profiles",requireAuth,controller.profile)
 router.post("/profiles/add-address",requireAuth,controller.addAdress)
+router.patch("/profiles/update",requireAuth,controller.update)
 export default router

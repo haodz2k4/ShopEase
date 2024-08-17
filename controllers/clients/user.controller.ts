@@ -33,17 +33,25 @@ export const logout = catchAsync(async (req: Request, res: Response) => {
     res.status(200).json({message: "Signed out successfully"})
 }) 
 
-//[GET] "/user/profiles"
+//[GET] "/users/profiles"
 export const profile = catchAsync(async (req: Request, res: Response) => {
     const user = res.locals.user 
     res.status(200).json({user})
 }) 
 
-//[POST] "/user/profiles/add-address"
+//[POST] "/users/profiles/add-address"
 export const addAdress = catchAsync(async (req: Request, res: Response) => {
     const {city,street,district} = req.body
     const user = res.locals.user 
     user.address = user.address.push({city, street, district})
     const updateUser = await UserService.updateUserById(user.id, {address: user.address})
     res.status(201).json({message: "Address added successfully", user: updateUser})
-}) 
+})  
+
+//[PATCH] "/users/profiles/update"
+export const update = catchAsync(async (req: Request, res: Response) => {
+    const user_id = res.locals.user.id
+    const bodyUser = req.body 
+    const user = await UserService.updateUserById(user_id, bodyUser)
+    res.status(200).json({message: "Updated user successfully", user})
+})
