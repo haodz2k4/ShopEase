@@ -31,7 +31,7 @@ export const create = catchAsync(async (req: Request, res: Response) => {
 export const edit = catchAsync(async (req: Request, res: Response) => {
     const id = req.params.id
     const body = req.body
-    const account = await AccountService.editAccount(id,body);
+    const account = await AccountService.updateAccountById(id,body);
     res.status(200).json({message: "Edited account successfully",account})
 })
 

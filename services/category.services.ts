@@ -1,4 +1,4 @@
-import Category, { ICategory } from "../models/category.model";
+import Category from "../models/category.model";
 import ApiError from "../utils/ApiError";
 
 export const getCategoriesByQuery = async (
@@ -6,7 +6,7 @@ export const getCategoriesByQuery = async (
      sort: Record<string, any>,
      pagination: Record<"limit"| "skip",number>,
      select: string
-    ):Promise<ICategory[]> => { 
+    ) => { 
 
     if(sort.sortKey && sort.sortValue){
         sort[sort.sortKey] 
@@ -32,7 +32,7 @@ export const convertSlugToId = async (slug: string) :Promise<string> => {
     return category.id
 }
 
-export const getCategoryById = async (id: string) :Promise<ICategory> => {
+export const getCategoryById = async (id: string)  => {
     const category = await Category
     .findOne({_id: id, deleted: false})
     .populate('parent_category','title thumbnail')
@@ -42,7 +42,7 @@ export const getCategoryById = async (id: string) :Promise<ICategory> => {
     return category
 }
 
-export const getDetailBySlug = async (slug: string):Promise<ICategory> => {
+export const getDetailBySlug = async (slug: string) => {
     const category = await Category
     .findOne({slug, deleted: false, status: "active"})
     .populate('parent_category','title thumbnail')
@@ -52,12 +52,12 @@ export const getDetailBySlug = async (slug: string):Promise<ICategory> => {
     return category
 }
 
-export const createCategory = async(value: ICategory):Promise<ICategory> => {
+export const createCategory = async(value: Record<string, any>) => {
     return await Category.create(value);
 
 }
 
-export const updateCategoryById = async (id: String, value: ICategory) :Promise<ICategory> => {
+export const updateCategoryById = async (id: String, value: Record<string, any>)  => {
     const category = await Category.findByIdAndUpdate(id, value,{runValidators: true, new: true});
     if(!category){
         throw new ApiError(404,'Category is not found')
@@ -71,7 +71,7 @@ export const existsCategoryId = async (id: string) :Promise<boolean>=> {
     return result !== null;
 }
 
-export const deleteCategoryById = async (id: string) :Promise<ICategory> => {
+export const deleteCategoryById = async (id: string)  => {
     const category = await Category.findByIdAndUpdate(id,{deleted: true}).select("deleted")
     if(!category){
         throw new ApiError(404,"Category is not found")

@@ -39,7 +39,7 @@ export const detail = catchAsync(async (req: Request, res: Response) => {
 export const changeStatus = catchAsync(async(req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     const status = req.body.status;
-    const product = await ProductService.changeStatus(id, status);
+    const product = await ProductService.editProductById(id, {status});
     res.status(200).json({message: "Status change successful",product})
     next()
 })
@@ -50,12 +50,22 @@ export const changeMulti = catchAsync(async (req: Request, res: Response, next: 
     const type = req.params.type;
     switch(type) {
         case "delete": 
-            const infoUpdateDelete = await ProductService.changeMultiDelete(ids);
+            const infoUpdateDelete = await ProductService.changeMulti(ids,{deleted: false});
+            if(infoUpdateDelete.modifiedCount === 0){
+                throw new ApiError(400,"No products have been delete")
+            }else if(infoUpdateDelete.modifiedCount !== ids.length){
+                throw new ApiError(400,"Unable to delete all products")
+            }
             res.status(200).json({message: "Deleted multiple products successfully", infoUpdateDelete})
             break;
         case "status":
             const status = req.body.status
-            const listChangeStatus = await ProductService.changeMultiStatus(ids,status);
+            const listChangeStatus = await ProductService.changeMulti(ids,{status});
+            if(listChangeStatus.modifiedCount === 0){
+                throw new ApiError(400,"No products have been change status")
+            }else if(listChangeStatus.modifiedCount !== ids.length){
+                throw new ApiError(400,"Unable to change status all products")
+            }
             res.status(200).json({message: "change status multiple products successfully", products: listChangeStatus})
             break;
         case "position":
@@ -72,7 +82,7 @@ export const changeMulti = catchAsync(async (req: Request, res: Response, next: 
 export const edit = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id 
     const body = req.body
-    const product = await ProductService.edit(id,body);
+    const product = await ProductService.editProductById(id,body);
     res.status(200).json({message: "Update product successfull",product})
     next()
 })

@@ -1,6 +1,6 @@
-import Product,{IProduct} from "../models/product.model";
+import Product from "../models/product.model";
 import ApiError from "../utils/ApiError";
-export const getProductsByQuery = async (filter: Record<string, any>, sort: Record<string, any>,pagination: Record<"limit"| "skip",number>,select: string = "") :Promise<IProduct[]> => {
+export const getProductsByQuery = async (filter: Record<string, any>, sort: Record<string, any>,pagination: Record<"limit"| "skip",number>,select: string = "") => {
     
     const sortOption: Record<string, any> = {};
     if (sort.sortKey && sort.sortValue) {
@@ -24,7 +24,7 @@ export const getTotalProductByQuery = async (filter: Record<string , any>) :Prom
     return await Product.countDocuments(filter)
 }
 
-export const getProductById = async (id: string) :Promise<IProduct> => {
+export const getProductById = async (id: string)  => {
     const product = await Product
         .findOne({_id: id, deleted: false})
         .lean()
@@ -34,7 +34,7 @@ export const getProductById = async (id: string) :Promise<IProduct> => {
     return product
 }
 
-export const getProductBySlug = async (slug: string) :Promise<IProduct> => {
+export const getProductBySlug = async (slug: string)  => {
     const product = await Product
     .findOne({slug, deleted: false, status: "active"})
     .populate({
@@ -49,40 +49,10 @@ export const getProductBySlug = async (slug: string) :Promise<IProduct> => {
     return product
 }
 
-export const changeStatus = async (id: string, status: string) :Promise<IProduct> => {
-    const product = await Product
-    .findByIdAndUpdate(id,{status: status},{new: true, runValidators: true}).select("status slug")
-    if(!product){
-        throw new ApiError(404,"No products found")
-    }
-    return product
+export const changeMulti = async (ids: string[], value: Record<string, any>)=> {
+    return await Product.updateMany({_id: {$in: ids}}, value);
+ 
 }
-
-export const changeMultiDelete = async (ids: string[]) :Promise<any> => {
-    const infoUpdate = await Product.updateMany({_id: {$in: ids}}, {deleted: false});
-    if(infoUpdate.modifiedCount === 0){
-        throw new ApiError(400,"No products have been delete")
-    }else if(infoUpdate.modifiedCount !== ids.length){
-        throw new ApiError(400,"Unable to delete all products")
-    }
-    return infoUpdate
-}
-
-export const changeMultiStatus = async (ids: string[], status: string) => {
-    const products = await Promise.all(
-        ids.map(item => Product
-            .findByIdAndUpdate(item,{status},{runValidators: true, new: true})
-            .select("status")
-        )
-            
-    )
-    if(products.length === 0){
-        throw new ApiError(400,"No products have been change status")
-    }else if(products.length !== ids.length){
-        throw new ApiError(400,"Unable to change status all products")
-    }
-    return products
-} 
 
 export const changeMultiPosition = async (ids: {id: string, position: number}[]) => {
     const products = await Promise.all(
@@ -100,7 +70,7 @@ export const changeMultiPosition = async (ids: {id: string, position: number}[])
     return products
 }
 
-export const edit = async (id: string, value: IProduct) :Promise<IProduct> => {
+export const editProductById = async (id: string, value: Record<string, any>) => {
     const product = await Product.findByIdAndUpdate(id, value);
     if(!product){
         throw new ApiError(404,"No products found")
@@ -108,7 +78,7 @@ export const edit = async (id: string, value: IProduct) :Promise<IProduct> => {
     return product
 }
 
-export const create = async (value: IProduct) => {
+export const create = async (value: Record<string, any>) => {
     const product = await Product.create(value);
     return product
 }

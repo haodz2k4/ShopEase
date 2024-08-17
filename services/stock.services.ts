@@ -1,11 +1,11 @@
-import Stock, { IStock } from "../models/stock.model"
+import Stock from "../models/stock.model"
 import ApiError from "../utils/ApiError"
 
 export const getStocksByQuery = async (
         productsFilter : Record<string,any>, 
         stocksFilter: Record<string, any>,
         pagination: Record<"limit"| "skip",number>
-    ) :Promise<IStock[]>=> { 
+    )=> { 
 
 
     if(productsFilter.title){
@@ -49,7 +49,7 @@ export const getTotalStock= async () :Promise<number> => {
     return await Stock.countDocuments()
 }
 
-export const getStockById = async (id: string) :Promise<IStock> => {
+export const getStockById = async (id: string)=> {
     const stock = await Stock
         .findOne({_id: id, deleted: false})
         .populate({
@@ -80,7 +80,7 @@ export const getStockById = async (id: string) :Promise<IStock> => {
 
 }
 
-export const changeQuantityById = async (id: string, quantity: number) :Promise<IStock> => {
+export const changeQuantityById = async (id: string, quantity: number) => {
     const stock = await Stock.findByIdAndUpdate(
         id,
         {quantity},
@@ -92,13 +92,13 @@ export const changeQuantityById = async (id: string, quantity: number) :Promise<
     return stock
 }
 
-export const addStock = async (value: IStock) :Promise<IStock> => {
+export const addStock = async (value: Record<string, any>)=> {
     const stock = await Stock.create(value)
 
     return stock 
 }
 
-export const deleteStockById = async (id: string) :Promise<IStock> => {
+export const deleteStockById = async (id: string)  => {
     const stock = await Stock.findByIdAndUpdate(
         id,
         {deleted: true},
@@ -111,7 +111,7 @@ export const deleteStockById = async (id: string) :Promise<IStock> => {
     return  stock
 }
 
-export const editStockById = async (id: string, value: IStock) => {
+export const editStockById = async (id: string, value: Record<string, any>) => {
     const stock = await Stock.findByIdAndUpdate(id, value);
     return stock
 }

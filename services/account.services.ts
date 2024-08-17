@@ -1,6 +1,6 @@
 import Account,{IAccount} from "../models/account.model";
 import ApiError from "../utils/ApiError";
-export const getAccountsByQuery = async  (filter: Record<string, any>, pagination: Record<"skip" | "limit", number>):Promise<IAccount[]> => {
+export const getAccountsByQuery = async  (filter: Record<string, any>, pagination: Record<"skip" | "limit", number>) => {
     const accounts = await Account
     .find({...filter, deleted: false})
     .populate('role_id','title')
@@ -37,7 +37,7 @@ export const createAccount = async (value: IAccount) => {
   
 }
 
-export const editAccount = async (id:string,value: IAccount)=> {
+export const updateAccountById = async (id:string,value: Record<string, any>)=> {
     const isExists= await Account.isEmailExists(value.email);
     if(isExists && value.email){
         throw new ApiError(404,"Email already exists")
