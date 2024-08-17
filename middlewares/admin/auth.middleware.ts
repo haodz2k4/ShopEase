@@ -3,7 +3,6 @@ import { catchAsync } from "../../utils/catchAsync"
 import {Response, Request, NextFunction} from "express"
 import * as TokenService from "../../services/token.services";
 import {getAccountById} from "../../services/account.services"
-import redis from "../../config/redis";
 
 export const requireAuth = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     if(!req.headers.authorization){
@@ -11,11 +10,12 @@ export const requireAuth = catchAsync(async (req: Request, res: Response, next: 
     }
     const token = req.headers.authorization.split(" ")[1];
     const encode = TokenService.verifyToken(token)
+    const isBlacklisted= await TokenService.isExistsTokenInBlacklist(token);
+    if(isBlacklisted){
+        throw new ApiError(401,"Invalid token payload")
+    }
     if (typeof encode === 'object' && 'account_id' in encode) {
-        const isBlacklisted= await redis.get(token);
-        if(isBlacklisted === 'blacklisted'){
-            throw new ApiError(401,"Invalid token payload")
-        }
+        
         const account = await getAccountById(encode.account_id);
         if (!account) {
             throw new ApiError(401, "Account not found");

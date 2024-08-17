@@ -15,4 +15,9 @@ export const addTokenToBlackList = async (token: string) => {
     const decoded = jwt.decode(token) as jwt.JwtPayload
     const expireAt = decoded.exp as number - Math.floor(Date.now() / 1000)
     await redis.setex(token,expireAt,'blacklisted')
+} 
+
+export const isExistsTokenInBlacklist = async (token: string) :Promise<boolean> => {
+    const cachedBlacklist = await redis.get(token);
+    return cachedBlacklist === 'blacklisted' ? true : false
 }
