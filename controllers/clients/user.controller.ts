@@ -1,4 +1,4 @@
-import {NextFunction, Request, Response} from "express"
+import { Request, Response} from "express"
 import { catchAsync } from "../../utils/catchAsync"
 import * as UserService from "../../services/user.services";
 import * as AuthService from "../../services/auth.services";
@@ -33,8 +33,17 @@ export const logout = catchAsync(async (req: Request, res: Response) => {
     res.status(200).json({message: "Signed out successfully"})
 }) 
 
-//[GET] "/user/profile"
-export const profile = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+//[GET] "/user/profiles"
+export const profile = catchAsync(async (req: Request, res: Response) => {
     const user = res.locals.user 
     res.status(200).json({user})
-})
+}) 
+
+//[POST] "/user/profiles/add-address"
+export const addAdress = catchAsync(async (req: Request, res: Response) => {
+    const {city,street,district} = req.body
+    const user = res.locals.user 
+    user.address = user.address.push({city, street, district})
+    const updateUser = await UserService.updateUserById(user.id, {address: user.address})
+    res.status(201).json({message: "Address added successfully", user: updateUser})
+}) 

@@ -25,3 +25,11 @@ export const getUserById = async (id: string) => {
     }
     return user 
 }
+
+export const updateUserById = async (id: string, bodyUser: Record<string, any>) => {
+    const user = await User.findByIdAndUpdate(id, bodyUser,{new: true, runValidators: true})
+    if(!user){
+        throw new ApiError(404,"User is not found")
+    }
+    return user
+}

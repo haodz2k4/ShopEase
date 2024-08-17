@@ -40,10 +40,11 @@ const userSchema = new Schema<IUser,UserModel,IUserMethod>({
     phone: {type: String, required: true,minlength: 8, maxlength: 10},
     birthDate: {type: Date, required: true},
     address: [{
-        city: {type: String, required: true},
-        street: {type: String, required: true},
-        district: {type: String, required: true} 
-    }],
+            city: {type: String},
+            street: {type: String},
+            district: {type: String} 
+        }
+    ],
     defaultAddress: {
         type: Number,
         default: 0
