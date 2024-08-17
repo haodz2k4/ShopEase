@@ -10,9 +10,10 @@ export const getAccountsByQuery = async  (filter: Record<string, any>, paginatio
     return accounts
 }
 
+
+
 export const getAccountByEmail = async (email: string) => {
-    const account = await Account.findOne({email, deleted: false})
-    return account
+    return await Account.findOne({email, deleted: false})
 }
 
 export const getAccountById = async (id: string) => {

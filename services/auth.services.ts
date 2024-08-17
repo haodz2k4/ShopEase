@@ -1,5 +1,5 @@
 import ApiError from "../utils/ApiError"
-import { getAccountByEmail } from "./account.services"
+import { getAccountByEmail, getAccountById } from "./account.services"
 
 export const loginAdminWithEmailAndPassword = async (email: string, password: string) => {
     const account = await getAccountByEmail(email)
@@ -8,4 +8,13 @@ export const loginAdminWithEmailAndPassword = async (email: string, password: st
     }
 
     return account
+}
+
+export const verifyAdminPassword = async (account_id: string,password: string) :Promise<boolean> => {
+    const account = await getAccountById(account_id);
+    if(!await account.isPasswordMatch(password)){
+        return false 
+    }
+    return true 
+
 }
