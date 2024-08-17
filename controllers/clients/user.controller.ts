@@ -1,4 +1,4 @@
-import {Request, Response} from "express"
+import {NextFunction, Request, Response} from "express"
 import { catchAsync } from "../../utils/catchAsync"
 import * as UserService from "../../services/user.services";
 import * as AuthService from "../../services/auth.services";
@@ -31,4 +31,10 @@ export const logout = catchAsync(async (req: Request, res: Response) => {
 
     await TokenService.addTokenToBlackList(token);
     res.status(200).json({message: "Signed out successfully"})
+}) 
+
+//[GET] "/user/profile"
+export const profile = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const user = res.locals.user 
+    res.status(200).json({user})
 })

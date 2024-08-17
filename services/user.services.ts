@@ -11,9 +11,17 @@ export const createUser = async (boydUser: Record<string, any>) => {
 }
 
 export const getUserByEmail = async (email: string) => {
-    const user = await User.findOne({email});
+    const user = await User.findOne({email, deleted: false}).select("-deleted");
     if(!user){
         throw new ApiError(404,"Email do not exists")
+    }
+    return user 
+}
+
+export const getUserById = async (id: string) => {
+    const user = await User.findOne({_id: id, deleted: false}).select("-deleted");
+    if(!user){
+        throw new ApiError(404,"User is not found")
     }
     return user 
 }
