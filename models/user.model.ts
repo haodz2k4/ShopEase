@@ -1,5 +1,5 @@
-import { Schema,model } from "mongoose";
-
+import bcrypt from 'bcrypt';
+import { Schema,model, Model } from "mongoose";
 interface IUser {
     _id: Schema.Types.ObjectId
     userName: string,
@@ -21,7 +21,12 @@ interface IUser {
     status: "active" | "inactive",
     deleted: boolean
 }
-const userSchema = new Schema<IUser>({
+
+interface UserModel extends Model<IUser> {
+    isEmailExists(email: string) :Promise<boolean>
+}
+
+const userSchema = new Schema<IUser,UserModel>({
     userName: {type: String, required: true, unique: true, minlength: 3, maxlength: 30},
     firstName: {type: String, required: true,minlength: 1, maxlength: 20},
     lastName: {type: String, required: true,minlength: 1, maxlength: 20},
@@ -39,7 +44,6 @@ const userSchema = new Schema<IUser>({
         default: 0
     },
     favoriteList: {type: [String], default: []},
-    slug: {type: String, unique: true},
     gender: {type: String, enum: ["nam","nữ"]},
     status: {type: String, enum: ["active","inactive"]},
     deleted: {
@@ -48,4 +52,16 @@ const userSchema = new Schema<IUser>({
     }
 },{timestamps: true})
 
-export default model<IUser>("users",userSchema)
+userSchema.statics.isEmailExists = async function (email: string) :Promise<boolean> {
+    const isExists = await this.findOne({email});
+    return !!isExists
+}
+
+userSchema.pre('save', async function(next){
+    if(this.isModified('password')){
+        this.password = await bcrypt.hash(this.password, 10)
+    }
+    next()
+})
+
+export default model<IUser,UserModel>("user",userSchema)
