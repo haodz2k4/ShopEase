@@ -22,8 +22,6 @@ export const logout = catchAsync(async (req: Request, res: Response) => {
     } 
     const token = req.headers.authorization.split(" ")[1];
     
-    const decoded = jwt.decode(token) as jwt.JwtPayload
-    const expireAt = decoded.exp as number - Math.floor(Date.now() / 1000)
-    await redis.setex(token,expireAt,'blacklisted')
+    await TokenService.addTokenToBlackList(token)
     res.status(200).json({message: "Successfully logged out"})
 })
