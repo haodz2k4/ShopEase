@@ -3,6 +3,7 @@ import { catchAsync } from "../../utils/catchAsync"
 import * as UserService from "../../services/user.services";
 import * as AuthService from "../../services/auth.services";
 import * as TokenService from "../../services/token.services"
+import ApiError from "../../utils/ApiError";
 
 //[POST] "/users/register"
 export const register = catchAsync(async (req: Request, res: Response) => {
@@ -19,4 +20,15 @@ export const login = catchAsync(async (req: Request, res: Response) => {
     const user = await AuthService.loginUserWithEmailAndPassword(email, password)
     const token = await TokenService.generateToken({user_id: user.id})
     res.status(200).json({message: "Login successfully", user, token})
+}) 
+
+//[GET] "/users/logout"
+export const logout = catchAsync(async (req: Request, res: Response) => {
+    if(!req.headers.authorization){
+        throw new ApiError(400,"Token not provided")
+    }
+    const token = req.headers.authorization.split(" ")[1]
+
+    await TokenService.addTokenToBlackList(token);
+    res.status(200).json({message: "Signed out successfully"})
 })
