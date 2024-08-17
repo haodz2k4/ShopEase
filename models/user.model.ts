@@ -22,11 +22,16 @@ interface IUser {
     deleted: boolean
 }
 
-interface UserModel extends Model<IUser> {
+interface IUserMethod {
+    isPassworMatch(password: string) :Promise<boolean>
+}
+
+interface UserModel extends Model<IUser,{},IUserMethod> {
     isEmailExists(email: string) :Promise<boolean>
 }
 
-const userSchema = new Schema<IUser,UserModel>({
+
+const userSchema = new Schema<IUser,UserModel,IUserMethod>({
     userName: {type: String, required: true, unique: true, minlength: 3, maxlength: 30},
     firstName: {type: String, required: true,minlength: 1, maxlength: 20},
     lastName: {type: String, required: true,minlength: 1, maxlength: 20},
@@ -55,6 +60,10 @@ const userSchema = new Schema<IUser,UserModel>({
 userSchema.statics.isEmailExists = async function (email: string) :Promise<boolean> {
     const isExists = await this.findOne({email});
     return !!isExists
+}
+
+userSchema.methods.isPassworMatch = async function(password: string) :Promise<boolean> {
+    return await bcrypt.compare(password,this.password)
 }
 
 userSchema.pre('save', async function(next){

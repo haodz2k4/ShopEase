@@ -1,5 +1,6 @@
 import ApiError from "../utils/ApiError"
 import { getAccountByEmail, getAccountById } from "./account.services"
+import { getUserByEmail } from "./user.services"
 
 export const loginAdminWithEmailAndPassword = async (email: string, password: string) => {
     const account = await getAccountByEmail(email)
@@ -17,4 +18,12 @@ export const verifyAdminPassword = async (account_id: string,password: string) :
     }
     return true 
 
+}
+
+export const loginUserWithEmailAndPassword = async (email: string, password: string) => {
+    const user = await getUserByEmail(email);
+    if(!await user.isPassworMatch(password)){
+        throw new ApiError(400,"Invalid password")
+    }
+    return user 
 }

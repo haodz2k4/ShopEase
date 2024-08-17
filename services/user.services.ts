@@ -9,3 +9,11 @@ export const createUser = async (boydUser: Record<string, any>) => {
     }
     return User.create(boydUser)
 }
+
+export const getUserByEmail = async (email: string) => {
+    const user = await User.findOne({email});
+    if(!user){
+        throw new ApiError(404,"Email do not exists")
+    }
+    return user 
+}
