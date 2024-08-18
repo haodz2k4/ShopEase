@@ -6,9 +6,7 @@ export default {
     },
     email: {
         smtp:{
-            host: process.env.SMTP_HOST as string,
-            port: parseInt(process.env.SMTP_PORT as string),
-            secure: false,
+            service: 'gmail',
             auth: {
               user: process.env.SMTP_USERNAME as string,
               pass: process.env.SMTP_PASS as string,
