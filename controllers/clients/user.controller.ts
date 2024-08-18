@@ -63,4 +63,3 @@ export const changeAvatar = catchAsync(async (req: Request, res: Response) => {
     const user = await UserService.updateUserById(user_id, {avatar})
     res.status(200).json({message: "Changed avatar successfully", avatar: user.avatar})
 }) 
-
