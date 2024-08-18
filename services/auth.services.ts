@@ -30,7 +30,7 @@ export const loginUserWithEmailAndPassword = async (email: string, password: str
 }
 
 export const createForgotPass = async (email: string, otp: string) => {
-    return  await ForgotPassword.create({email, otp, expireAt: Date.now() + 3*60*1000})
+    return  await ForgotPassword.create({email, code: otp, expireAt: Date.now() + 3*60*1000})
 }
 
 export const getForgotPassbyEmailAndCode = async (email: string, otp: string) :Promise<boolean> => {

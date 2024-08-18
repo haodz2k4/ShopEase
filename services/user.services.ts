@@ -27,9 +27,11 @@ export const getUserById = async (id: string) => {
 }
 
 export const updateUserById = async (id: string, bodyUser: Record<string, any>) => {
-    const user = await User.findByIdAndUpdate(id, bodyUser,{new: true, runValidators: true})
-    if(!user){
-        throw new ApiError(404,"User is not found")
+    const user = await getUserById(id)
+    if(bodyUser.email && await User.isEmailExists(bodyUser.email)){
+        throw new ApiError(400,"Email is already exists")
     }
+    Object.assign(user,bodyUser)
+    await user.save()
     return user
 }

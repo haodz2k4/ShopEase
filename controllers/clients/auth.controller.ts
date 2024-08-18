@@ -79,6 +79,7 @@ export const resetPassword = catchAsync(async (req: Request, res: Response) => {
         }
         
         const user = await UserService.getUserByEmail(verifyToken.email)
+        console.log(newPassword)
         await UserService.updateUserById(user.id, {password: newPassword})
         res.status(200).json({message: "Update password successfull"})
     }else{
