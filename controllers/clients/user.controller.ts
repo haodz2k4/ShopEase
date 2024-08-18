@@ -54,4 +54,13 @@ export const update = catchAsync(async (req: Request, res: Response) => {
     const bodyUser = req.body 
     const user = await UserService.updateUserById(user_id, bodyUser)
     res.status(200).json({message: "Updated user successfully", user})
-})
+}) 
+
+//[PATCH] "/users/profiles/change-avatar"
+export const changeAvatar = catchAsync(async (req: Request, res: Response) => {
+    const user_id = res.locals.user.id 
+    const avatar = req.body.avatar  
+    const user = await UserService.updateUserById(user_id, {avatar})
+    res.status(200).json({message: "Changed avatar successfully", avatar: user.avatar})
+}) 
+
