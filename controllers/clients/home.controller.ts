@@ -4,6 +4,7 @@ import { catchAsync } from "../../utils/catchAsync";
 import paginate from "../../helpers/paginate.helper";
 //services 
 import * as ProductService from "../../services/product.services";
+import * as CacheService from "../../services/cache.services"
 //[GET] "/"
 export const index = catchAsync(async (req: Request, res: Response) => {
 
@@ -20,7 +21,10 @@ export const index = catchAsync(async (req: Request, res: Response) => {
             {position: 'desc'},
             pagination,
             "title thumbnail price discountPercentage slug"
-        )
+        ) 
+    const key = res.locals.cacheKey;
+    const duration = res.locals.cacheDuration
+    await CacheService.cacheSet(key, duration,hightLightedProducts)
         
     res.json({hightLightedProducts})
 })

@@ -4,6 +4,7 @@ import { pick } from "../../utils/pick";
 //services 
 import * as ProductService from "../../services/product.services" 
 import * as CacheService from "../../services/cache.services"
+import {getTotalQuantities} from "../../services/stock.services"
 import paginate from "../../helpers/paginate.helper";
 import { rangePrice } from "../../helpers/price.helper";
 //[GET] "/search"
@@ -34,7 +35,10 @@ export const index = catchAsync(async (req: Request, res: Response) => {
     const selectField = "title thumbnail price discountPercentage slug"
     filter.status = "active"
     const products = await ProductService.getProductsByQuery(filter,sort, pagination,selectField)
-    
+    const quantities = await Promise.all(products.map(item => getTotalQuantities(item._id)))
+    products.forEach((item, index) => {
+        item.quantity = quantities[index]
+    })
     const cacheKey =res.locals.cacheKey 
     const cacheDuration = res.locals.cacheDuration 
     await CacheService.cacheSet(cacheKey, cacheDuration,{products, pagination})

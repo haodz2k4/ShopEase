@@ -14,7 +14,7 @@ export const getCartByUserId = async (user_id: string) => {
         throw new ApiError(404,"Cart is not found")
     }
     await CacheService.cacheSet(cacheKey,3600, cart) 
-    await CacheService.addKeyToGroup(CACHE_KEY_GROUP.CARTS,cacheKey)
+    await CacheService.addKeyToGroup(CACHE_KEY_GROUP.PRODUCTS,cacheKey)
     return cart
 } 
 
