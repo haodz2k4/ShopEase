@@ -43,10 +43,9 @@ export const updateAccountById = async (id:string,value: Record<string, any>)=> 
     if(isExists && value.email){
         throw new ApiError(404,"Email already exists")
     }
-    const account = await Account.findByIdAndUpdate(id, value)
-    if(!account){
-        throw new ApiError(404,"Account is not found")
-    }
+    const account = await getAccountById(id)
+    Object.assign(account, value)
+    await account.save()
     return account
 } 
 

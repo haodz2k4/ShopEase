@@ -4,6 +4,7 @@ import { Request, Response} from "express"
 import * as UserService from "../../services/user.services";
 import * as EmailService from "../../services/email.services";
 import ApiError from "../../utils/ApiError";
+import { Types } from 'mongoose';
 import { generateRandomNumber } from './../../helpers/generate.helper';
 
 //[GET] "/users/profiles"
@@ -37,3 +38,25 @@ export const changeAvatar = catchAsync(async (req: Request, res: Response) => {
     res.status(200).json({message: "Changed avatar successfully", avatar: user.avatar})
 }) 
 
+//[POST] "/users/profiles/favorite-list/add/:product_id"
+export const addFavoriteList = catchAsync(async (req: Request, res: Response) => {
+    const product_id = req.params.product_id 
+    const userId = res.locals.user.id 
+    const favoriteList = await UserService.addFavoriteListByUserId(userId, product_id) 
+    if(!favoriteList){
+        throw new ApiError(404, "User is not found")
+    }
+    res.status(201).json({message: "Added address successfully", favoriteList})
+    
+})
+
+//[DELETE] "/users/profiles/favorite-list/delete/:product_id"   
+export const deleteFavoriteList =catchAsync(async (req: Request, res: Response) => {
+    const product_id = req.params.product_id 
+    const userId = res.locals.user.id
+    const user = await UserService.deleteFavoriteListByUserId(userId,product_id)
+    if(!user){
+        throw new ApiError(404, "User is not found")
+    }
+    res.status(200).json({message: "Remove favorite list successfully", user})
+})

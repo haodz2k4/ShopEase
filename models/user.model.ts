@@ -15,7 +15,7 @@ interface IUser {
         street: string,
         district: string 
     }],
-    favoriteList: string[],
+    favoriteList: Schema.Types.ObjectId[],
     defaultAddress: number,
     slug: string,
     gender: "nam" | "nữ",
@@ -51,7 +51,7 @@ const userSchema = new Schema<IUser,UserModel,IUserMethod>({
         type: Number,
         default: 0
     },
-    favoriteList: {type: [String], default: []},
+    favoriteList: [{ type: Schema.Types.ObjectId, ref: 'Product', default: []}],
     gender: {type: String, enum: ["nam","nữ"]},
     status: {type: String, enum: ["active","inactive"]},
     deleted: {

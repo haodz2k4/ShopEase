@@ -34,4 +34,21 @@ export const updateUserById = async (id: string, bodyUser: Record<string, any>) 
     Object.assign(user,bodyUser)
     await user.save()
     return user
+} 
+
+export const addFavoriteListByUserId = async (user_id: string,product_id: string) => {
+    return await User.findByIdAndUpdate(
+        user_id,
+        {$addToSet: {favoriteList: product_id}},
+        {new: true, select: 'favoriteList'}
+    )
+} 
+
+export const deleteFavoriteListByUserId = async (user_id: string, product_id: string) => {
+    return await User.findByIdAndUpdate(
+        user_id,
+        {$pull: {favoriteList: product_id}},
+        {new: true, select: 'favoriteList'}
+    ) 
+
 }
