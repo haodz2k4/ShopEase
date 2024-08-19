@@ -1,5 +1,10 @@
 import redis from "../config/redis"
 
+
+export const generateKey =(prefix: string,...params: string[]) :string => {
+    return `${prefix}:${params.join(":")}`
+}
+
 export const cacheSet = async (cacheKey: string, duration: number = 3600,value: Record<string, any>):Promise<void> => {
 
     await redis.setex(cacheKey,duration,JSON.stringify(value));

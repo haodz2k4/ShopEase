@@ -1,7 +1,8 @@
 import {Request, Response, NextFunction} from "express";
 import redis from "../config/redis";
 import * as CacheService from "../services/cache.services"
-export const cacheMiddleware = (duration: number, keyGroup: string = "none") => {
+
+export const cacheByMethodAndUrl = (duration: number, keyGroup: string = "none") => {
     return async (req: Request, res: Response, next: NextFunction) :Promise<void> => {
         const key = `${req.method}:${req.originalUrl}`
         try {
@@ -21,6 +22,8 @@ export const cacheMiddleware = (duration: number, keyGroup: string = "none") => 
         }
     }
 }
+
+
 export const clearCacheMiddleware = (groupKey: string) => {
     return async (req: Request, res: Response,next: NextFunction) :Promise<void> => {
         try {
