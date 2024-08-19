@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
 import { Schema,model, Model } from "mongoose";
+import Cart from "../models/cart.model"
 interface IUser {
     _id: Schema.Types.ObjectId
     userName: string,
@@ -17,7 +18,6 @@ interface IUser {
     }],
     favoriteList: Schema.Types.ObjectId[],
     defaultAddress: number,
-    slug: string,
     gender: "nam" | "nữ",
     status: "active" | "inactive",
     deleted: boolean
@@ -74,6 +74,15 @@ userSchema.pre('save', async function(next){
         this.password = await bcrypt.hash(this.password, 10)
     }
     next()
+}) 
+userSchema.post('save',async function(doc) {
+    try {
+        await Cart.create({user_id: doc._id})
+    } catch (error) {
+        console.error("Error creating cart", error)
+    }
 })
+
+
 
 export default model<IUser,UserModel>("user",userSchema)

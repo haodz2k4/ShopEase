@@ -7,7 +7,7 @@ export const createUser = async (boydUser: Record<string, any>) => {
     if(isExistsEmail){
         throw new ApiError(400,"Email is already exists")
     }
-    return User.create(boydUser)
+    return await User.create(boydUser)
 }
 
 export const getUserByEmail = async (email: string) => {
