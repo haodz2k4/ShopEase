@@ -24,6 +24,21 @@ export const addCartByUserId = async (user_id: string, product_id: string, quant
             {new: true}
         )
     }
+
+    if(!cart){
+        throw new ApiError(404,"Cart is not found")
+    }
     return cart
 };
 
+export const updateCart = async (user_id: string, product_id: string, quantity: number) => {
+    const cart = await Cart.findOneAndUpdate(
+        {user_id, 'products.product_id': product_id},
+        {'products.$.quantity': quantity},
+        {new: true}
+    )
+    if(!cart){
+        throw new ApiError(404,"Product is not found")
+    }
+    return cart
+}

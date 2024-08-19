@@ -15,7 +15,15 @@ export const add = catchAsync(async (req: Request, res: Response) => {
     const product_id = req.params.product_id 
     const quantity = req.body.quantity 
     const cart = await CartService.addCartByUserId(userId,product_id,quantity)
-
-    res.status(200).json({message: "Added product to cart successfully", cart})
+    
+    res.status(201).json({message: "Added product to cart successfully", cart})
 }) 
 
+//[post] "/cart/change-quantity/:product_id"
+export const changeQuantity = catchAsync(async (req: Request, res: Response) => {
+    const userId = res.locals.user.id
+    const product_id = req.params.product_id 
+    const quantity = req.body.quantity  
+    const cart = await CartService.updateCart(userId,product_id,quantity)
+    res.status(200).json({message: "Updated quantity successfully", cart})
+})
