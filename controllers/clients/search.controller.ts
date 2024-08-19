@@ -1,7 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import { catchAsync } from "../../utils/catchAsync";
-import * as ProductService from "../../services/product.services"
 import { pick } from "../../utils/pick";
+//services 
+import * as ProductService from "../../services/product.services" 
+import * as CacheService from "../../services/cache.services"
 import paginate from "../../helpers/paginate.helper";
 import { rangePrice } from "../../helpers/price.helper";
 //[GET] "/search"
@@ -30,10 +32,13 @@ export const index = catchAsync(async (req: Request, res: Response) => {
 
     //select field
     const selectField = "title thumbnail price discountPercentage slug"
-
     filter.status = "active"
     const products = await ProductService.getProductsByQuery(filter,sort, pagination,selectField)
     
+    const cacheKey =res.locals.cacheKey 
+    const cacheDuration = res.locals.cacheDuration 
+    await CacheService.cacheSet(cacheKey, cacheDuration,{products, pagination})
+
     res.status(200).json({products, pagination})
     
 }) 

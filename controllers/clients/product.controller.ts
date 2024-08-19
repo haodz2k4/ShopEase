@@ -1,5 +1,4 @@
-import {Request, Response, NextFunction} from "express"
-import redis from "../../config/redis";
+import {Request, Response} from "express"
 import { catchAsync } from "../../utils/catchAsync"
 import { pick } from "../../utils/pick"
 //helpers 
@@ -9,6 +8,7 @@ import paginate from "../../helpers/paginate.helper";
 import * as ProductService from "../../services/product.services";
 import * as CategoryService from "../../services/category.services";
 import { getTotalQuantities } from "../../services/stock.services";
+import * as CacheService from "../../services/cache.services"
 //[GET] "/products"
 export const index = catchAsync(async (req: Request, res: Response) => {
     const filter: Record<string, any> = {}
@@ -42,7 +42,7 @@ export const index = catchAsync(async (req: Request, res: Response) => {
     //caching 
     const key = res.locals.cacheKey 
     const duration = res.locals.cacheDuration 
-    await redis.setex(key,duration, JSON.stringify(responsePayload))
+    await CacheService.cacheSet(key,duration, responsePayload)
     res.json(responsePayload)
     
 })
@@ -80,6 +80,6 @@ export const detail = catchAsync(async (req: Request, res: Response) => {
     //handle caching 
     const key = res.locals.cacheKey 
     const duration = res.locals.cacheDuration;
-    await redis.setex(key,duration,JSON.stringify(product))
+    await CacheService.cacheSet(key,duration,product)
     res.status(200).json({product})
 })
