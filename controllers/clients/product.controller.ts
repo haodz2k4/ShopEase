@@ -11,18 +11,16 @@ import * as CategoryService from "../../services/category.services";
 import { getTotalQuantities } from "../../services/stock.services";
 //[GET] "/products"
 export const index = catchAsync(async (req: Request, res: Response) => {
-    const listQuery: string[] = ["title"]
+    const filter: Record<string, any> = {}
     //range price
     const minPrice = parseInt(req.query.minPrice as string) 
     const maxPrice = parseInt(req.query.maxPrice as string)
     if(!isNaN(minPrice) && !isNaN(maxPrice)){
-        listQuery.push("price")
-        req.query.price = rangePrice(minPrice, maxPrice)
+        filter.price = rangePrice(minPrice, maxPrice)
     } 
     //end range price 
 
     //filter 
-    const filter = pick(req.query,listQuery);
     filter.status = "active"
     //pagination
     const page = parseInt(req.query.page as string) || 1

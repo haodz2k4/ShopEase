@@ -6,10 +6,6 @@ export const getProductsByQuery = async (filter: Record<string, any>, sort: Reco
     if (sort.sortKey && sort.sortValue) {
         sortOption[sort.sortKey] = sort.sortValue === 'desc' ? -1 : 1;
     }
-    //searching
-    if(filter.title){
-        filter.title = new RegExp(filter.title,"i")
-    }
     const products = await Product
         .find({ ...filter, deleted: false })
         .sort(sortOption)

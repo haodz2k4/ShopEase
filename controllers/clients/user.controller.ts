@@ -2,10 +2,7 @@ import { catchAsync } from './../../utils/catchAsync';
 import { Request, Response} from "express"
 //services 
 import * as UserService from "../../services/user.services";
-import * as EmailService from "../../services/email.services";
 import ApiError from "../../utils/ApiError";
-import { Types } from 'mongoose';
-import { generateRandomNumber } from './../../helpers/generate.helper';
 
 //[GET] "/users/profiles"
 export const profile = catchAsync(async (req: Request, res: Response) => {

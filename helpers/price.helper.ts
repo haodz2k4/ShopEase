@@ -1,5 +1,4 @@
-//input: minPrice, maxPrice 
-//output: objectPrice
-export const rangePrice = (minPrice: number, maxPrice: number) : any => {
+
+export const rangePrice = (minPrice: number, maxPrice: number) : Record<string, number> => {
     return {$gte: minPrice, $lte: maxPrice}
 }
