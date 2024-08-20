@@ -12,6 +12,7 @@ import roleRouter from "./role.router";
 import accountRouter from "./account.router"
 import authRouter from "./auth.router";
 import myAccountRouter from "./my-account.router";
+import orderRouter from "./order.router";
 
 const path = `/api/${system.prefixAdmin}`
 export default (app: Express) => {
@@ -24,5 +25,6 @@ export default (app: Express) => {
     app.use(`${path}/roles`,requireAuth,roleRouter)
     app.use(`${path}/accounts`,requireAuth,accountRouter)
     app.use(`${path}/auth`,authRouter)
-    app.use(`${path}/my-accounts`,myAccountRouter)
+    app.use(`${path}/my-accounts`,requireAuth,myAccountRouter)
+    app.use(`${path}/orders`, requireAuth, orderRouter)
 }
