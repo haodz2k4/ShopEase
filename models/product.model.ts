@@ -14,6 +14,7 @@ export interface IProduct extends Document{
     slug: string
     status: ("active" | "inactive")
     quantity?: number
+    sold?: number
     
 }
 const productSchema = new Schema<IProduct>({

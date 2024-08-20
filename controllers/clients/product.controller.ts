@@ -8,6 +8,7 @@ import paginate from "../../helpers/paginate.helper";
 import * as ProductService from "../../services/product.services";
 import * as CategoryService from "../../services/category.services";
 import { getTotalQuantities } from "../../services/stock.services";
+import { getTotalSoldByProductId } from "../../services/order.services";
 import * as CacheService from "../../services/cache.services"
 //[GET] "/products"
 export const index = catchAsync(async (req: Request, res: Response) => {
@@ -35,9 +36,13 @@ export const index = catchAsync(async (req: Request, res: Response) => {
     const products = await ProductService.getProductsByQuery(filter,sort,pagination,"title thumbnail price discountPercentage slug")
     //add field quantity 
     const quantities = await Promise.all(products.map(item => getTotalQuantities(item._id)))
+    //add fields sold 
+    const solds = await Promise.all(products.map(item => getTotalSoldByProductId(item._id)))
     products.forEach((item, index) => {
         item.quantity = quantities[index];
+        item.sold = solds[index]
     })
+
     const responsePayload = {products, pagination}
     //caching 
     const key = res.locals.cacheKey 

@@ -39,3 +39,15 @@ export const getOrderByUserId = async (user_id: string) => {
 export const addOrder = async (bodyOrder: Record<string, any>) => {
     return await Order.create(bodyOrder)
 }
+
+export const getTotalSoldByProductId = async (product_id: any) => {
+    const orders = await Order.find({'products.product_id': product_id}).select("products") 
+    
+    let total = 0
+    for(const order of orders){
+        for(const product of order.products){
+            total += product.quantity
+        }
+    }
+    return total
+}
