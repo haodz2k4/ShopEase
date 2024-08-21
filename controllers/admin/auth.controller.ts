@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken';
 import {Request, Response} from "express";
 import { catchAsync } from "../../utils/catchAsync";
 import * as AuthService from "../../services/auth.services";
+import * as AccountService from "../../services/account.services"
 import * as TokenService from "../../services/token.services";
 import redis from "../../config/redis";
 import ApiError from "../../utils/ApiError";
@@ -24,4 +25,5 @@ export const logout = catchAsync(async (req: Request, res: Response) => {
     
     await TokenService.addTokenToBlackList(token)
     res.status(200).json({message: "Successfully logged out"})
-})
+}) 
+
