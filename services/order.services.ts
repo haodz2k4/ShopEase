@@ -15,8 +15,8 @@ export const getOrdersByQuery = async (sort: Record<string, any>, pagination: Re
 
 }
 
-export const getTotalOrder = async () => {
-    return await Order.countDocuments()
+export const getTotalOrder = async (filter?: Record<string, any>) => {
+    return await Order.countDocuments(filter)
 }
 
 export const getOrderById = async (id: string) => {
